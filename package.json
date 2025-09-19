@@ -3,15 +3,16 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-  "start": "node src/index.js",
-  "dev": "nodemon src/index.js"
-},
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
     "express": "^5.1.0",
+    "method-override": "^3.0.0",
     "pug": "^3.0.3"
   },
   "devDependencies": {
