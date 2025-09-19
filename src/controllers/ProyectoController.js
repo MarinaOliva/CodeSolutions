@@ -2,10 +2,10 @@
 
 // Importación de módulos
 const fs = require('fs').promises; 
-const Proyecto = require('../modelos/Proyecto'); 
+const Proyecto = require('../models/Proyecto'); 
 
 // Ruta del archivo JSON donde se almacenan los proyectos
-const archivoProyectos = './datos/projects.json';
+const archivoProyectos = './data/projectos.json';
 
 // Función para obtener todos los proyectos
 const obtenerProyectos = async () => {
@@ -30,20 +30,20 @@ module.exports = {
   listar: async (req, res) => {
     try {
       const proyectos = await obtenerProyectos();
-      res.render('projects/list', { proyectos });
+      res.render('proyectos/listar', { proyectos });
     } catch {
-      res.render('projects/list', { proyectos: [] });
+      res.render('proyectos/listar', { proyectos: [] });
     }
   },
 
   // Mostrar formulario de creación
-  mostrarFormularioCrear: (req, res) => res.render('projects/create'),
+  mostrarFormularioCrear: (req, res) => res.render('proyectos/crear'),
 
   // Mostrar formulario de edición con los datos del proyecto
   mostrarFormularioEditar: async (req, res) => {
     const proyectos = await obtenerProyectos();
     const proyecto = proyectos.find(p => p.id === req.params.id);
-    res.render('projects/edit', { proyecto });
+    res.render('proyectos/editar', { proyecto });
   },
 
   // Crear un nuevo proyecto
@@ -54,9 +54,9 @@ module.exports = {
       const nuevoProyecto = new Proyecto(req.body.nombre, req.body.descripcion, req.body.cliente);
       proyectos.push(nuevoProyecto);
       await guardarProyectos(proyectos);
-      res.redirect('/projects');
+      res.redirect('/proyectos');
     } catch {
-      res.render('projects/create', { error: true, datos: req.body });
+      res.render('proyectos/crear', { error: true, datos: req.body });
     }
   },
 
@@ -76,9 +76,9 @@ module.exports = {
           : p
       );
       await guardarProyectos(actualizados);
-      res.redirect('/projects');
+      res.redirect('/proyectos');
     } catch {
-      res.render('projects/edit', { error: true, proyecto: req.body });
+      res.render('proyectos/editar', { error: true, proyecto: req.body });
     }
   },
 
@@ -91,9 +91,9 @@ module.exports = {
         p.id === req.params.id ? { ...p, estado: 'inactivo' } : p
       );
       await guardarProyectos(actualizados);
-      res.redirect('/projects');
+      res.redirect('/proyectos');
     } catch {
-      res.status(500).redirect('/projects');
+      res.status(500).redirect('/proyectos');
     }
   }
 };
