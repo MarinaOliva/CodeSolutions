@@ -1,0 +1,66 @@
+[
+  {
+    "id": "r1a2b3c4-5678-90ab-cdef-1234567890r1",
+    "tipo": "Horas trabajadas por empleado",
+    "fechaGeneracion": "2025-09-18T20:00:00.000Z",
+    "contenido": [
+      {
+        "empleadoId": "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+        "nombreEmpleado": "Lucía Fernández",
+        "horasRegistradasTotales": 6,
+        "tareas": [
+          {
+            "tareaId": "t1a2b3c4-5678-90ab-cdef-1234567890t1",
+            "nombreTarea": "Diseño de base de datos",
+            "horasRegistradas": 2
+          },
+          {
+            "tareaId": "t4d5e6f7-8901-23de-fabc-4567890123t4",
+            "nombreTarea": "Maquetación de interfaz",
+            "horasRegistradas": 4
+          }
+        ]
+      },
+      {
+        "empleadoId": "b2e3f4d5-6789-01bc-defa-2345678901bc",
+        "nombreEmpleado": "Martín Rojas",
+        "horasRegistradasTotales": 1,
+        "tareas": [
+          {
+            "tareaId": "t3c4d5e6-7890-12cd-efab-3456789012t3",
+            "nombreTarea": "Configuración de reportes de ventas",
+            "horasRegistradas": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "r2b3c4d5-6789-01bc-defa-2345678901r2",
+    "tipo": "Avance de proyectos",
+    "fechaGeneracion": "2025-09-18T20:05:00.000Z",
+    "contenido": [
+      {
+        "proyectoId": "f1a2b3c4-5678-90ab-cdef-1234567890fa",
+        "nombreProyecto": "Plataforma de E-Learning",
+        "totalTareas": 3,
+        "tareasFinalizadas": 0,
+        "porcentajeAvance": 0
+      },
+      {
+        "proyectoId": "a2b3c4d5-6789-01bc-defa-2345678901ab",
+        "nombreProyecto": "Sistema de Reservas Hotel",
+        "totalTareas": 1,
+        "tareasFinalizadas": 0,
+        "porcentajeAvance": 0
+      },
+      {
+        "proyectoId": "b3c4d5e6-7890-12cd-efab-3456789012bc",
+        "nombreProyecto": "Dashboard de Ventas",
+        "totalTareas": 1,
+        "tareasFinalizadas": 0,
+        "porcentajeAvance": 0
+      }
+    ]
+  }
+]
