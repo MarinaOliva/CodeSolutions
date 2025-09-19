@@ -1,0 +1,35 @@
+[
+  {
+    "id": "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+    "nombre": "Lucía Fernández",
+    "email": "lucia.fernandez@codesolutions.com",
+    "especialidad": "Node.js",
+    "area": "Desarrollo",
+    "rol": "desarrollador",
+    "habilidades": ["Node.js", "Express", "JavaScript", "MongoDB", "REST APIs"],
+    "estaActivo": true,
+    "fechaCreacion": "2025-09-15T09:00:00.000Z"
+  },
+  {
+    "id": "b2e3f4d5-6789-01bc-defa-2345678901bc",
+    "nombre": "Martín Rojas",
+    "email": "martin.rojas@codesolutions.com",
+    "especialidad": "QA Automatización",
+    "area": "Desarrollo",
+    "rol": "QA",
+    "habilidades": ["Selenium", "Cypress", "JavaScript", "Testing de API", "Automatización de pruebas"],
+    "estaActivo": true,
+    "fechaCreacion": "2025-09-15T09:30:00.000Z"
+  },
+  {
+    "id": "c3f4g5h6-7890-12cd-efab-3456789012cd",
+    "nombre": "Valentina Gómez",
+    "email": "valentina.gomez@codesolutions.com",
+    "especialidad": "Contabilidad Financiera",
+    "area": "Contabilidad",
+    "rol": "contador",
+    "habilidades": [],
+    "estaActivo": true,
+    "fechaCreacion": "2025-09-15T10:00:00.000Z"
+  }
+]
