@@ -12,17 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Expandir / contraer detalles de empleados
-  const botonesExpandir = document.querySelectorAll('.expand-btn');
-
-  botonesExpandir.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const id = btn.dataset.id;
-      const detalle = document.getElementById(`detalle-${id}`);
-      if (detalle) {
-        detalle.style.display = detalle.style.display === 'none' ? 'table-row' : 'none';
-      }
-    });
+  // Expandir / contraer detalles de empleados/proyectos
+const botonesExpandir = document.querySelectorAll('.expand-btn');
+botonesExpandir.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const id = btn.dataset.id;
+    const detalle = document.getElementById(`detalle-${id}`);
+    if (detalle) {
+      detalle.style.display = detalle.style.display === 'none' ? 'table-row' : 'none';
+    }
   });
+});
+
 
 });

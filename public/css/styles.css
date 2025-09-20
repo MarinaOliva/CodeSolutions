@@ -83,6 +83,30 @@ input:focus, select:focus, textarea:focus {
   border-color: #3498db;
 }
 
+.empleados-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columnas */
+  gap: 0.5rem;
+}
+
+.empleados-checkboxes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.checkbox-item input[type="checkbox"] {
+  vertical-align: middle;
+}
+
+
+
 /* =========================
    Tablas
 ========================= */

@@ -2,10 +2,10 @@
 const { v4: uuidv4 } = require('uuid');
 
 // Lista de estados válidos para un proyecto
-const estadosValidos = ["activo", "en progreso", "finalizado", "pausado", "cancelado"];
+const estadosValidos = ["Pendiente", "En progreso", "Finalizado", "Cancelado"];
 
 class Proyecto {
-  constructor(nombre, descripcion, cliente, estado = "activo") {
+  constructor(nombre, descripcion, cliente, estado = "Pendiente", empleadosAsignados = []) {
     this.id = uuidv4();
 
     // Normalizamos strings
@@ -21,8 +21,8 @@ class Proyecto {
 
     this.fechaCreacion = new Date().toISOString();
 
-    // Nuevo campo: lista de empleados asignados
-    this.empleadosAsignados = [];
+    // Lista de empleados asignados (se recibe desde el controller)
+    this.empleadosAsignados = Array.isArray(empleadosAsignados) ? empleadosAsignados : [];
   }
 
   // Métodos útiles para cambiar estado
@@ -34,11 +34,11 @@ class Proyecto {
   }
 
   finalizar() {
-    this.estado = "finalizado";
+    this.estado = "Finalizado";
   }
 
   pausar() {
-    this.estado = "pausado";
+    this.estado = "Cancelado";
   }
 
   // Métodos para manejar empleados asignados

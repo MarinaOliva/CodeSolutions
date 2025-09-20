@@ -34,4 +34,5 @@ block contenido
     label Habilidades (separadas por coma):
     input(type="text", name="habilidades", value=(datos && datos.habilidades ? datos.habilidades.join(', ') : ''))
 
-    button(type="submit") Guardar
+    button.btn.btn-primary(type="submit") Guardar
+    a.btn.btn-secondary(href="/empleados") Cancelar

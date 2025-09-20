@@ -4,7 +4,7 @@
     "nombre": "Plataforma de E-Learning",
     "descripcion": "Sistema web para gestión de cursos online, inscripciones y seguimiento de estudiantes.",
     "cliente": "EduTech Solutions",
-    "estado": "activo",
+    "estado": "En progreso",
     "fechaCreacion": "2025-09-16T09:00:00.000Z",
     "empleadosAsignados": [
       "b2e3f4d5-6789-01bc-defa-2345678901bc"
@@ -15,7 +15,7 @@
     "nombre": "Sistema de Reservas Hotel",
     "descripcion": "Aplicación para reservas de habitaciones, gestión de pagos y check-in/out automático.",
     "cliente": "HotelPlus",
-    "estado": "activo",
+    "estado": "En progreso",
     "fechaCreacion": "2025-09-16T09:30:00.000Z",
     "empleadosAsignados": [
       "b2e3f4d5-6789-01bc-defa-2345678901bc"
@@ -26,8 +26,33 @@
     "nombre": "Dashboard de Ventas",
     "descripcion": "Portal para seguimiento de ventas, indicadores de rendimiento y reportes gráficos.",
     "cliente": "RetailAnalytics",
-    "estado": "activo",
+    "estado": "En progreso",
     "fechaCreacion": "2025-09-16T10:00:00.000Z",
     "empleadosAsignados": []
+  },
+  {
+    "id": "81b54eaa-854c-4d35-bab6-feb45e733c4b",
+    "nombre": "Análisis de e-commerce",
+    "descripcion": "",
+    "cliente": "NextTech",
+    "estado": "Cancelado",
+    "fechaCreacion": "2025-09-20T22:51:29.863Z",
+    "empleadosAsignados": [
+      "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+      "b2e3f4d5-6789-01bc-defa-2345678901bc",
+      "c3f4g5h6-7890-12cd-efab-3456789012cd"
+    ]
+  },
+  {
+    "id": "8e632ba8-73a6-423b-80a5-b337b4307ffd",
+    "nombre": "Mejora sistema contable",
+    "descripcion": "",
+    "cliente": "GenG",
+    "estado": "Cancelado",
+    "fechaCreacion": "2025-09-20T22:52:13.366Z",
+    "empleadosAsignados": [
+      "b2e3f4d5-6789-01bc-defa-2345678901bc",
+      "c3f4g5h6-7890-12cd-efab-3456789012cd"
+    ]
   }
 ]
