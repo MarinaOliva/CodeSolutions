@@ -1,11 +1,10 @@
-// controllers/ProjectController.js
-
 // Importación de módulos
 const fs = require('fs').promises; 
 const Proyecto = require('../models/Proyecto'); 
 
 // Ruta del archivo JSON donde se almacenan los proyectos
 const archivoProyectos = './data/projectos.json';
+const archivoTareas = './data/tareas.json';
 
 // Función para obtener todos los proyectos
 const obtenerProyectos = async () => {
@@ -13,7 +12,6 @@ const obtenerProyectos = async () => {
     const datos = await fs.readFile(archivoProyectos, 'utf8');
     return JSON.parse(datos).filter(p => p?.nombre); // Evita proyectos sin nombre
   } catch {
-    // Si el archivo no existe, se crea uno vacío
     await fs.writeFile(archivoProyectos, '[]');
     return [];
   }
@@ -22,6 +20,22 @@ const obtenerProyectos = async () => {
 // Función para guardar proyectos en el JSON
 const guardarProyectos = async (proyectos) => {
   await fs.writeFile(archivoProyectos, JSON.stringify(proyectos, null, 2));
+};
+
+// Función para leer tareas
+const obtenerTareas = async () => {
+    try {
+        const datos = await fs.readFile(archivoTareas, 'utf8');
+        return JSON.parse(datos);
+    } catch {
+        await fs.writeFile(archivoTareas, '[]');
+        return [];
+    }
+};
+
+// Función para guardar tareas
+const guardarTareas = async (tareas) => {
+    await fs.writeFile(archivoTareas, JSON.stringify(tareas, null, 2));
 };
 
 // Exportación del controlador con operaciones CRUD
@@ -50,7 +64,6 @@ module.exports = {
   crear: async (req, res) => {
     try {
       const proyectos = await obtenerProyectos();
-      // Crear proyecto con nombre, descripción y cliente
       const nuevoProyecto = new Proyecto(req.body.nombre, req.body.descripcion, req.body.cliente);
       proyectos.push(nuevoProyecto);
       await guardarProyectos(proyectos);
@@ -86,7 +99,6 @@ module.exports = {
   eliminar: async (req, res) => {
     try {
       const proyectos = await obtenerProyectos();
-      // Baja lógica: marcar como inactivo en vez de eliminar
       const actualizados = proyectos.map(p =>
         p.id === req.params.id ? { ...p, estado: 'inactivo' } : p
       );
@@ -94,6 +106,31 @@ module.exports = {
       res.redirect('/proyectos');
     } catch {
       res.status(500).redirect('/proyectos');
+    }
+  },
+
+  // Quitar un empleado de un proyecto y de sus tareas
+  quitarEmpleado: async (req, res) => {
+    const { idProyecto, idEmpleado } = req.params;
+    try {
+        const proyectos = await obtenerProyectos();
+        const proyecto = proyectos.find(p => p.id === idProyecto);
+        if (!proyecto) return res.status(404).send('Proyecto no encontrado');
+
+        // Quitar del proyecto
+        proyecto.empleadosAsignados = proyecto.empleadosAsignados?.filter(eId => eId !== idEmpleado) || [];
+        await guardarProyectos(proyectos);
+
+        // Quitar de las tareas del proyecto
+        const tareas = await obtenerTareas();
+        const tareasActualizadas = tareas.map(t =>
+            t.proyectoId === idProyecto && t.empleadoId === idEmpleado ? { ...t, empleadoId: null } : t
+        );
+        await guardarTareas(tareasActualizadas);
+
+        res.redirect(`/proyectos/editar/${idProyecto}`);
+    } catch {
+        res.status(500).send('Error al quitar empleado del proyecto');
     }
   }
 };

@@ -2,26 +2,63 @@
 const fs = require('fs').promises;
 const Empleado = require('../models/Empleado'); 
 
-// Ruta del archivo JSON donde se almacenan los empleados
+// Rutas de los archivos JSON
 const archivoEmpleados = './data/empleados.json';
+const archivoProyectos = './data/proyectos.json';
+const archivoTareas = './data/tareas.json';
 
-// Listado de roles y áreas válidas para validaciones
+// Listado de roles y áreas válidas
 const ROLES_VALIDOS = ['administrador', 'desarrollador', 'QA', 'DevOps', 'soporte', 'contador'];
 const AREAS_VALIDAS = ['Desarrollo', 'Administración', 'Soporte', 'Contabilidad'];
 
-// Obtener empleados desde el archivo JSON (se crea un nuevo archivo vacío si no existe)
+// Función para leer empleados
 const obtenerEmpleados = async () => {
     try {
         const datos = await fs.readFile(archivoEmpleados, 'utf8');
         return JSON.parse(datos);
-    } catch (error) {
-        // Si ocurre un error (ej. archivo no existe), se crea uno nuevo
+    } catch {
         await fs.writeFile(archivoEmpleados, '[]');
         return [];
     }
 };
 
-// Exportar los métodos del controlador
+// Función para leer proyectos
+const obtenerProyectos = async () => {
+    try {
+        const datos = await fs.readFile(archivoProyectos, 'utf8');
+        return JSON.parse(datos);
+    } catch {
+        await fs.writeFile(archivoProyectos, '[]');
+        return [];
+    }
+};
+
+// Función para leer tareas
+const obtenerTareas = async () => {
+    try {
+        const datos = await fs.readFile(archivoTareas, 'utf8');
+        return JSON.parse(datos);
+    } catch {
+        await fs.writeFile(archivoTareas, '[]');
+        return [];
+    }
+};
+
+// Función para guardar empleados
+const guardarEmpleados = async (empleados) => {
+    await fs.writeFile(archivoEmpleados, JSON.stringify(empleados, null, 2));
+};
+
+// Función para guardar proyectos
+const guardarProyectos = async (proyectos) => {
+    await fs.writeFile(archivoProyectos, JSON.stringify(proyectos, null, 2));
+};
+
+// Función para guardar tareas
+const guardarTareas = async (tareas) => {
+    await fs.writeFile(archivoTareas, JSON.stringify(tareas, null, 2));
+};
+
 module.exports = {
 
     // Listar todos los empleados
@@ -34,17 +71,15 @@ module.exports = {
         }
     },
 
-    // Mostrar el formulario para crear un nuevo empleado
+    // Mostrar formulario para crear nuevo empleado
     mostrarFormulario: (req, res) => {
         res.render('empleados/crear');
     },
 
     // Crear un nuevo empleado
-    
     crear: async (req, res) => {
         const { nombre, email, especialidad, area, rol, habilidades } = req.body;
 
-        // Validar que el rol y el área sean válidos
         if (!ROLES_VALIDOS.includes(rol) || !AREAS_VALIDAS.includes(area)) {
             return res.render('empleados/crear', {
                 error: true,
@@ -54,33 +89,90 @@ module.exports = {
         }
 
         try {
-            // Obtener empleados existentes
             const empleados = await obtenerEmpleados();
-
-            // Crear nuevo empleado con el constructor actualizado
             const nuevoEmpleado = new Empleado(
                 nombre,
                 email,
                 especialidad,
                 area,
                 rol,
-                habilidades || [] // si no hay habilidades, se inicializa como array vacío
+                habilidades || []
             );
 
-            // Agregar el nuevo empleado al listado
             empleados.push(nuevoEmpleado);
-
-            // Guardar la lista completa en el archivo JSON
-            await fs.writeFile(archivoEmpleados, JSON.stringify(empleados, null, 2));
-
-            // Redirigir a la vista de listado de empleados
+            await guardarEmpleados(empleados);
             res.redirect('/empleados');
-        } catch (error) {
-            // Manejo de errores al guardar
+        } catch {
             res.render('empleados/crear', {
                 error: true,
                 mensaje: 'Error al guardar el empleado',
                 datos: req.body
+            });
+        }
+    },
+
+    // Eliminar un empleado de la empresa y desasignarlo de proyectos y tareas
+    eliminar: async (req, res) => {
+        const empleadoId = req.params.id;
+        try {
+            // Quitar del JSON de empleados
+            const empleados = await obtenerEmpleados();
+            const empleadosActualizados = empleados.filter(e => e.id !== empleadoId);
+            await guardarEmpleados(empleadosActualizados);
+
+            // Quitar de los proyectos
+            const proyectos = await obtenerProyectos();
+            const proyectosActualizados = proyectos.map(proy => {
+                if (proy.empleadosAsignados) {
+                    proy.empleadosAsignados = proy.empleadosAsignados.filter(id => id !== empleadoId);
+                }
+                return proy;
+            });
+            await guardarProyectos(proyectosActualizados);
+
+            // Quitar de las tareas asignadas
+            const tareas = await obtenerTareas();
+            const tareasActualizadas = tareas.map(t => 
+                t.empleadoId === empleadoId ? { ...t, empleadoId: null } : t
+            );
+            await guardarTareas(tareasActualizadas);
+
+            res.redirect('/empleados');
+        } catch (error) {
+            console.error(error);
+            res.status(500).render('error', { 
+                titulo: 'Error', 
+                mensajeError: 'No se pudo eliminar el empleado' 
+            });
+        }
+    },
+
+    // Quitar un empleado solo de un proyecto
+    quitarDeProyecto: async (req, res) => {
+        const { empleadoId, proyectoId } = req.params;
+        try {
+            const proyectos = await obtenerProyectos();
+            const proyectosActualizados = proyectos.map(proy => {
+                if (proy.id === proyectoId && proy.empleadosAsignados) {
+                    proy.empleadosAsignados = proy.empleadosAsignados.filter(id => id !== empleadoId);
+                }
+                return proy;
+            });
+            await guardarProyectos(proyectosActualizados);
+
+            // Quitar de las tareas del proyecto
+            const tareas = await obtenerTareas();
+            const tareasActualizadas = tareas.map(t => 
+                t.proyectoId === proyectoId && t.empleadoId === empleadoId ? { ...t, empleadoId: null } : t
+            );
+            await guardarTareas(tareasActualizadas);
+
+            res.redirect(`/proyectos/editar/${proyectoId}`);
+        } catch (error) {
+            console.error(error);
+            res.status(500).render('error', { 
+                titulo: 'Error', 
+                mensajeError: 'No se pudo quitar al empleado del proyecto' 
             });
         }
     }

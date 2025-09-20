@@ -5,7 +5,10 @@
     "descripcion": "Sistema web para gestión de cursos online, inscripciones y seguimiento de estudiantes.",
     "cliente": "EduTech Solutions",
     "estado": "activo",
-    "fechaCreacion": "2025-09-16T09:00:00.000Z"
+    "fechaCreacion": "2025-09-16T09:00:00.000Z",
+    "empleadosAsignados": [
+      "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+      "b2e3f4d5-6789-01bc-defa-2345678901bc"]
   },
   {
     "id": "a2b3c4d5-6789-01bc-defa-2345678901ab",
@@ -13,7 +16,10 @@
     "descripcion": "Aplicación para reservas de habitaciones, gestión de pagos y check-in/out automático.",
     "cliente": "HotelPlus",
     "estado": "activo",
-    "fechaCreacion": "2025-09-16T09:30:00.000Z"
+    "fechaCreacion": "2025-09-16T09:30:00.000Z",
+     "empleadosAsignados": [
+      "b2e3f4d5-6789-01bc-defa-2345678901bc"
+    ]
   },
   {
     "id": "b3c4d5e6-7890-12cd-efab-3456789012bc",
@@ -21,6 +27,7 @@
     "descripcion": "Portal para seguimiento de ventas, indicadores de rendimiento y reportes gráficos.",
     "cliente": "RetailAnalytics",
     "estado": "activo",
-    "fechaCreacion": "2025-09-16T10:00:00.000Z"
+    "fechaCreacion": "2025-09-16T10:00:00.000Z",
+     "empleadosAsignados": []
   }
 ]

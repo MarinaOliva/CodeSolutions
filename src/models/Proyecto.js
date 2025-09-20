@@ -20,6 +20,9 @@ class Proyecto {
     this.estado = estado;
 
     this.fechaCreacion = new Date().toISOString();
+
+    // Nuevo campo: lista de empleados asignados
+    this.empleadosAsignados = [];
   }
 
   // Métodos útiles para cambiar estado
@@ -36,6 +39,17 @@ class Proyecto {
 
   pausar() {
     this.estado = "pausado";
+  }
+
+  // Métodos para manejar empleados asignados
+  asignarEmpleado(idEmpleado) {
+    if (!this.empleadosAsignados.includes(idEmpleado)) {
+      this.empleadosAsignados.push(idEmpleado);
+    }
+  }
+
+  quitarEmpleado(idEmpleado) {
+    this.empleadosAsignados = this.empleadosAsignados.filter(id => id !== idEmpleado);
   }
 }
 
