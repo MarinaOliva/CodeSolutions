@@ -32,7 +32,7 @@ app.set('views', path.join(__dirname, 'vistas'));
 // Rutas
 // ======================
 
-const rutasPrincipales = require('./routes/app');
+const rutasPrincipales = require('./routes/index');
 const rutasProyectos = require('./routes/proyectoRoutes');
 const rutasEmpleados = require('./routes/empleadoRoutes');
 const rutasTareas = require('./routes/tareaRoutes');

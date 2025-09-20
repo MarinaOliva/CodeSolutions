@@ -8,7 +8,7 @@ const TareaController = require('../controllers/TareaController');
 router.get('/', TareaController.listar);
 
 // Mostrar formulario para crear nueva tarea
-router.get('/crear', TareaController.mostrarFormulario);
+router.get('/crear', TareaController.mostrarFormularioCrear);
 
 // Guardar una nueva tarea
 router.post('/crear', TareaController.crear);
@@ -17,15 +17,15 @@ router.post('/crear', TareaController.crear);
 router.get('/editar/:id', TareaController.mostrarFormularioEditar);
 
 // Guardar los cambios de la tarea editada
-router.post('/editar/:id', TareaController.editar);
+router.put('/editar/:id', TareaController.actualizar);
 
 // Eliminar una tarea
-router.post('/eliminar/:id', TareaController.eliminar);
+router.delete('/eliminar/:id', TareaController.eliminar);
 
 // Cambiar el estado de una tarea
-router.post('/estado/:id', TareaController.cambiarEstado);
+router.put('/estado/:id', TareaController.cambiarEstado);
 
 // Asignar un empleado a una tarea
-router.post('/asignar/:id', TareaController.asignarEmpleado);
+router.put('/asignar/:id', TareaController.asignarEmpleado);
 
 module.exports = router;
