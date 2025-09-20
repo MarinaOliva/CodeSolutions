@@ -5,7 +5,7 @@
     "nombre": "Diseño de base de datos",
     "horasEstimadas": 10,
     "horasRegistradas": 2,
-    "empleadoId": "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+    "empleadoId": null,
     "estado": "en proceso",
     "fechaCreacion": "2025-09-16T09:05:00.000Z"
   },
@@ -15,7 +15,7 @@
     "nombre": "Implementar login y autenticación",
     "horasEstimadas": 8,
     "horasRegistradas": 0,
-    "empleadoId": "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+    "empleadoId": null,
     "estado": "pendiente",
     "fechaCreacion": "2025-09-16T09:35:00.000Z"
   },
@@ -29,13 +29,13 @@
     "estado": "en proceso",
     "fechaCreacion": "2025-09-16T10:05:00.000Z"
   },
-   {
+  {
     "id": "t4d5e6f7-8901-23de-fabc-4567890123t4",
     "proyectoId": "f1a2b3c4-5678-90ab-cdef-1234567890fa",
     "nombre": "Maquetación de interfaz",
     "horasEstimadas": 12,
     "horasRegistradas": 4,
-    "empleadoId": "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+    "empleadoId": null,
     "estado": "en proceso",
     "fechaCreacion": "2025-09-16T09:15:00.000Z"
   },

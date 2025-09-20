@@ -7,8 +7,8 @@
     "estado": "activo",
     "fechaCreacion": "2025-09-16T09:00:00.000Z",
     "empleadosAsignados": [
-      "a1f2d3c4-5678-90ab-cdef-1234567890ab",
-      "b2e3f4d5-6789-01bc-defa-2345678901bc"]
+      "b2e3f4d5-6789-01bc-defa-2345678901bc"
+    ]
   },
   {
     "id": "a2b3c4d5-6789-01bc-defa-2345678901ab",
@@ -17,7 +17,7 @@
     "cliente": "HotelPlus",
     "estado": "activo",
     "fechaCreacion": "2025-09-16T09:30:00.000Z",
-     "empleadosAsignados": [
+    "empleadosAsignados": [
       "b2e3f4d5-6789-01bc-defa-2345678901bc"
     ]
   },
@@ -28,6 +28,6 @@
     "cliente": "RetailAnalytics",
     "estado": "activo",
     "fechaCreacion": "2025-09-16T10:00:00.000Z",
-     "empleadosAsignados": []
+    "empleadosAsignados": []
   }
 ]

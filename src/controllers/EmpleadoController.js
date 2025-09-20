@@ -3,9 +3,11 @@ const fs = require('fs').promises;
 const Empleado = require('../models/Empleado'); 
 
 // Rutas de los archivos JSON
-const archivoEmpleados = './data/empleados.json';
-const archivoProyectos = './data/proyectos.json';
-const archivoTareas = './data/tareas.json';
+const path = require('path');
+const archivoEmpleados = path.join(__dirname, '../data/empleados.json');
+const archivoProyectos = path.join(__dirname, '../data/proyectos.json');
+const archivoTareas = path.join(__dirname, '../data/tareas.json');
+
 
 // Listado de roles y áreas válidas
 const ROLES_VALIDOS = ['administrador', 'desarrollador', 'QA', 'DevOps', 'soporte', 'contador'];
@@ -67,6 +69,7 @@ module.exports = {
             const empleados = await obtenerEmpleados();
             res.render('empleados/listar', { empleados });
         } catch (error) {
+            console.error('Error en listar empleados:', error);
             res.status(500).send('Error al obtener los empleados');
         }
     },
@@ -110,6 +113,77 @@ module.exports = {
             });
         }
     },
+
+    // Mostrar formulario de edición de empleado
+mostrarFormularioEditar: async (req, res) => {
+  const empleadoId = req.params.id;
+  try {
+    const empleados = await obtenerEmpleados();
+    const empleado = empleados.find(e => e.id === empleadoId);
+
+    if (!empleado) {
+      return res.status(404).render('error', {
+        titulo: 'Empleado no encontrado',
+        mensajeError: 'No existe un empleado con ese ID'
+      });
+    }
+
+    res.render('empleados/editar', { empleado });
+  } catch (error) {
+    console.error(error);
+    res.status(500).render('error', {
+      titulo: 'Error',
+      mensajeError: 'No se pudo cargar el formulario de edición'
+    });
+  }
+},
+
+    // Editar un empleado existente
+    editar: async (req, res) => {
+    const empleadoId = req.params.id;
+    const { nombre, email, especialidad, area, rol, habilidades } = req.body;
+
+    if (!ROLES_VALIDOS.includes(rol) || !AREAS_VALIDAS.includes(area)) {
+        return res.render('empleados/editar', {
+        error: true,
+        mensaje: 'Rol o área inválida',
+        empleado: { id: empleadoId, ...req.body, habilidades: (habilidades || '').split(',').map(h => h.trim()) }
+        });
+    }
+
+    try {
+        const empleados = await obtenerEmpleados();
+        const index = empleados.findIndex(e => e.id === empleadoId);
+
+        if (index === -1) {
+        return res.status(404).render('error', {
+            titulo: 'Empleado no encontrado',
+            mensajeError: 'No existe un empleado con ese ID'
+        });
+        }
+
+        // Actualizar datos del empleado
+        empleados[index] = {
+        ...empleados[index],
+        nombre,
+        email,
+        especialidad,
+        area,
+        rol,
+        habilidades: habilidades ? habilidades.split(',').map(h => h.trim()) : []
+        };
+
+        await guardarEmpleados(empleados);
+        res.redirect('/empleados');
+    } catch (error) {
+        console.error(error);
+        res.status(500).render('error', {
+        titulo: 'Error',
+        mensajeError: 'No se pudo guardar la edición del empleado'
+        });
+    }
+    },
+
 
     // Eliminar un empleado de la empresa y desasignarlo de proyectos y tareas
     eliminar: async (req, res) => {

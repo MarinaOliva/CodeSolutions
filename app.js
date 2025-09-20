@@ -26,17 +26,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 // ======================
 
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'vistas'));
+app.set('views', path.join(__dirname, 'src/views'));
 
 // ======================
 // Rutas
 // ======================
 
-const rutasPrincipales = require('./routes/index');
-const rutasProyectos = require('./routes/proyectoRoutes');
-const rutasEmpleados = require('./routes/empleadoRoutes');
-const rutasTareas = require('./routes/tareaRoutes');
-const rutasReportes = require('./routes/reporteRoutes');
+const rutasPrincipales = require('./src/routes/index');
+const rutasProyectos = require('./src/routes/proyectoRoutes');
+const rutasEmpleados = require('./src/routes/empleadoRoutes');
+const rutasTareas = require('./src/routes/tareaRoutes');
+const rutasReportes = require('./src/routes/reporteRoutes');
 
 // Rutas públicas
 app.use('/', rutasPrincipales);

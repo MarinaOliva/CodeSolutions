@@ -6,7 +6,13 @@
     "especialidad": "Node.js",
     "area": "Desarrollo",
     "rol": "desarrollador",
-    "habilidades": ["Node.js", "Express", "JavaScript", "MongoDB", "REST APIs"],
+    "habilidades": [
+      "Node.js",
+      "Express",
+      "JavaScript",
+      "MongoDB",
+      "REST APIs"
+    ],
     "estaActivo": true,
     "fechaCreacion": "2025-09-15T09:00:00.000Z"
   },
@@ -17,7 +23,13 @@
     "especialidad": "QA Automatización",
     "area": "Desarrollo",
     "rol": "QA",
-    "habilidades": ["Selenium", "Cypress", "JavaScript", "Testing de API", "Automatización de pruebas"],
+    "habilidades": [
+      "Selenium",
+      "Cypress",
+      "JavaScript",
+      "Testing de API",
+      "Automatización de pruebas"
+    ],
     "estaActivo": true,
     "fechaCreacion": "2025-09-15T09:30:00.000Z"
   },
