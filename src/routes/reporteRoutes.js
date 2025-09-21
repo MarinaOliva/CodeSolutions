@@ -28,6 +28,6 @@ router.get('/avance', ReporteController.generarAvance);
 router.get('/historial', ReporteController.historial);
 
 // Ver detalle de un reporte específico
-router.get('detalle/:id', ReporteController.verDetalle);
+router.get('/detalle/:id', ReporteController.verDetalle);
 
 module.exports = router;
