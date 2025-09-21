@@ -65,17 +65,28 @@ listar: async (req, res) => {
   try {
     const proyectos = await obtenerProyectos();
     const empleados = await obtenerEmpleados();
+    const tareas = await obtenerTareas();
 
-    // Reemplazar IDs de empleados por sus nombres
     const proyectosConNombres = proyectos
-      .filter(p => p.estado !== 'Cancelado' && p.estado !== 'Finalizado') 
+      .filter(p => p.estado !== 'Cancelado' && p.estado !== 'Finalizado')
       .map(proyecto => {
-        const empleadosAsignados = proyecto.empleadosAsignados?.map(id => {
-          const emp = empleados.find(e => e.id === id);
-          return emp || { nombre: 'Desconocido', rol: '' }; 
-        }) || [];
+        // IDs de empleados asignados manualmente
+        const idsManual = proyecto.empleadosAsignados || [];
+        // IDs de empleados de tareas de este proyecto
+        const idsDeTareas = tareas
+          .filter(t => t.proyectoId === proyecto.id)
+          .flatMap(t => t.empleadosAsignados || []);
+        // Unir y eliminar duplicados
+        const idsUnidos = [...new Set([...idsManual, ...idsDeTareas])];
+        //Obtener objetos de empleados
+        const empleadosAsignados = empleados
+          .filter(e => idsUnidos.includes(e.id))
+          .map(e => ({ nombre: e.nombre, rol: e.rol, id: e.id }));
+
         return { ...proyecto, empleadosAsignados };
       });
+
+    
 
 
     res.render('proyectos/listar', { proyectos: proyectosConNombres });
