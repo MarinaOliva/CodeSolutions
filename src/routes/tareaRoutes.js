@@ -25,7 +25,4 @@ router.delete('/eliminar/:id', TareaController.eliminar);
 // Cambiar el estado de una tarea
 router.put('/estado/:id', TareaController.cambiarEstado);
 
-// Asignar un empleado a una tarea
-router.put('/asignar/:id', TareaController.asignarEmpleado);
-
 module.exports = router;

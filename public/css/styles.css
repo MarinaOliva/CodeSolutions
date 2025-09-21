@@ -68,6 +68,15 @@ form {
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   margin-bottom: 2rem;
 }
+/* Formularios de acción inline (editar, eliminar en listas) */
+form.form-inline {
+  display: inline;
+  background: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: none;
+  border: none;
+}
 
 input, select, textarea {
   width: 100%;

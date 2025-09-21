@@ -1,9 +1,9 @@
 const { v4: uuidv4 } = require('uuid');
 
-const estadosValidos = ["pendiente", "en progreso", "completada", "bloqueada"];
+const estadosValidos = ['Pendiente', 'En progreso', 'Finalizado', 'Eliminada'];
 
 class Tarea {
-  constructor(proyectoId, nombre, horasRegistradas = 0, empleadoId = null, estado = "pendiente") {
+  constructor(proyectoId, nombre, horasRegistradas = 0, empleadoId = null, estado = "Pendiente") {
     this.id = uuidv4();
     this.proyectoId = proyectoId;      
     this.nombre = nombre?.trim();      // título o nombre de la tarea

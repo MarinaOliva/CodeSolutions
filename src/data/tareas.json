@@ -6,7 +6,6 @@
     "horasEstimadas": 10,
     "horasRegistradas": 2,
     "empleadoId": null,
-    "estado": "en proceso",
     "fechaCreacion": "2025-09-16T09:05:00.000Z"
   },
   {
@@ -16,7 +15,7 @@
     "horasEstimadas": 8,
     "horasRegistradas": 0,
     "empleadoId": null,
-    "estado": "pendiente",
+    "estado": "Pendiente",
     "fechaCreacion": "2025-09-16T09:35:00.000Z"
   },
   {
@@ -26,27 +25,34 @@
     "horasEstimadas": 6,
     "horasRegistradas": 1,
     "empleadoId": "b2e3f4d5-6789-01bc-defa-2345678901bc",
-    "estado": "en proceso",
+    "estado": "En proceso",
     "fechaCreacion": "2025-09-16T10:05:00.000Z"
   },
   {
     "id": "t4d5e6f7-8901-23de-fabc-4567890123t4",
     "proyectoId": "f1a2b3c4-5678-90ab-cdef-1234567890fa",
     "nombre": "Maquetación de interfaz",
-    "horasEstimadas": 12,
-    "horasRegistradas": 4,
-    "empleadoId": null,
-    "estado": "en proceso",
-    "fechaCreacion": "2025-09-16T09:15:00.000Z"
+    "horasEstimadas": "12",
+    "horasRegistradas": "8",
+    "empleadoId": "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+    "estado": "Pendiente",
+    "fechaCreacion": "2025-09-16T09:15:00.000Z",
+    "empleadosAsignados": [
+      "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+      "b2e3f4d5-6789-01bc-defa-2345678901bc"
+    ]
   },
   {
     "id": "t5e6f7g8-9012-34ef-abcd-5678901234t5",
     "proyectoId": "f1a2b3c4-5678-90ab-cdef-1234567890fa",
     "nombre": "Pruebas unitarias backend",
     "horasEstimadas": 8,
-    "horasRegistradas": 0,
+    "horasRegistradas": 7,
     "empleadoId": "b2e3f4d5-6789-01bc-defa-2345678901bc",
-    "estado": "pendiente",
-    "fechaCreacion": "2025-09-16T09:20:00.000Z"
+    "estado": "Finalizado",
+    "fechaCreacion": "2025-09-16T09:20:00.000Z",
+    "empleadosAsignados": [
+      "b2e3f4d5-6789-01bc-defa-2345678901bc"
+    ]
   }
 ]
