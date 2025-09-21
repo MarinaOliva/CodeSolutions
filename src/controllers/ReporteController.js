@@ -1,11 +1,13 @@
 const fs = require('fs').promises;
 const { v4: uuidv4 } = require('uuid');
+const path = require('path');
 
 // Archivos JSON
-const archivoTareas = './data/tareas.json';
-const archivoEmpleados = './data/empleados.json';
-const archivoProyectos = './data/proyectos.json';
-const archivoReportes = './data/reportes.json';
+const archivoEmpleados = path.join(__dirname, '../data/empleados.json');
+const archivoProyectos = path.join(__dirname, '../data/proyectos.json');
+const archivoTareas = path.join(__dirname, '../data/tareas.json');
+const archivoReportes = path.join(__dirname, '../data/reportes.json');
+
 
 // Leer JSON
 async function leerJSON(archivo) {
@@ -36,7 +38,7 @@ module.exports = {
       ]);
 
       const contenido = empleados.map(emp => {
-        const tareasEmpleado = tareas.filter(t => t.empleadoId === emp.id);
+        const tareasEmpleado = tareas.filter(t => t.empleadosAsignados?.includes(emp.id));
         return {
           empleadoId: emp.id,
           nombreEmpleado: emp.nombre,
