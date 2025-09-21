@@ -4,7 +4,7 @@ block contenido
   h1 Crear Nueva Tarea
 
   
-  form(action="/tareas" method="POST")
+  form(action="/tareas/crear" method="POST")
     // Nombre de la tarea
     div.form-group
       label(for="nombre") Nombre de la tarea
@@ -24,9 +24,9 @@ block contenido
     div.form-group
       label(for="estado") Estado
       select.form-control(name="estado" id="estado" required)
-        each estado in estadosValidos
-          if estado !== 'Eliminada'
-            option(value=estado)= estado
+        option(value="Pendiente") Pendiente
+        option(value="En progreso") En progreso
+
 
     // Horas estimadas
     div.form-group

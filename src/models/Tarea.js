@@ -3,12 +3,16 @@ const { v4: uuidv4 } = require('uuid');
 const estadosValidos = ['Pendiente', 'En progreso', 'Finalizado', 'Eliminada'];
 
 class Tarea {
-  constructor(proyectoId, nombre, horasRegistradas = 0, empleadoId = null, estado = "Pendiente") {
+  constructor(proyectoId, nombre, horasEstimadas = 0, horasRegistradas = 0, empleadosAsignados = [], estado = "Pendiente") {
     this.id = uuidv4();
-    this.proyectoId = proyectoId;      
-    this.nombre = nombre?.trim();      // título o nombre de la tarea
-    this.horasRegistradas = horasRegistradas; 
-    this.empleadoId = empleadoId;      
+    this.proyectoId = proyectoId;
+    this.nombre = nombre?.trim();
+    
+    this.horasEstimadas = horasEstimadas;
+    this.horasRegistradas = horasRegistradas;
+
+    // Siempre array
+    this.empleadosAsignados = Array.isArray(empleadosAsignados) ? empleadosAsignados : (empleadosAsignados ? [empleadosAsignados] : []);
 
     if (!estadosValidos.includes(estado)) {
       throw new Error(`Estado inválido: ${estado}. Estados permitidos: ${estadosValidos.join(", ")}`);

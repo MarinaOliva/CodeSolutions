@@ -5,7 +5,7 @@
     "nombre": "Diseño de base de datos",
     "horasEstimadas": 10,
     "horasRegistradas": 2,
-    "empleadoId": null,
+    "empleadosAsignados": [],
     "fechaCreacion": "2025-09-16T09:05:00.000Z"
   },
   {
@@ -14,7 +14,7 @@
     "nombre": "Implementar login y autenticación",
     "horasEstimadas": 8,
     "horasRegistradas": 0,
-    "empleadoId": null,
+    "empleadosAsignados": [],
     "estado": "Pendiente",
     "fechaCreacion": "2025-09-16T09:35:00.000Z"
   },
@@ -24,17 +24,18 @@
     "nombre": "Configuración de reportes de ventas",
     "horasEstimadas": 6,
     "horasRegistradas": 1,
-    "empleadoId": "b2e3f4d5-6789-01bc-defa-2345678901bc",
-    "estado": "En proceso",
+    "empleadosAsignados": [
+      "a1f2d3c4-5678-90ab-cdef-1234567890ab"
+    ],
+    "estado": "Pendiente",
     "fechaCreacion": "2025-09-16T10:05:00.000Z"
   },
   {
     "id": "t4d5e6f7-8901-23de-fabc-4567890123t4",
     "proyectoId": "f1a2b3c4-5678-90ab-cdef-1234567890fa",
     "nombre": "Maquetación de interfaz",
-    "horasEstimadas": "12",
-    "horasRegistradas": "8",
-    "empleadoId": "a1f2d3c4-5678-90ab-cdef-1234567890ab",
+    "horasEstimadas": 12,
+    "horasRegistradas": 6,
     "estado": "Pendiente",
     "fechaCreacion": "2025-09-16T09:15:00.000Z",
     "empleadosAsignados": [
@@ -48,11 +49,10 @@
     "nombre": "Pruebas unitarias backend",
     "horasEstimadas": 8,
     "horasRegistradas": 7,
-    "empleadoId": "b2e3f4d5-6789-01bc-defa-2345678901bc",
-    "estado": "Finalizado",
-    "fechaCreacion": "2025-09-16T09:20:00.000Z",
     "empleadosAsignados": [
       "b2e3f4d5-6789-01bc-defa-2345678901bc"
-    ]
+    ],
+    "estado": "En proceso",
+    "fechaCreacion": "2025-09-16T09:20:00.000Z"
   }
 ]
