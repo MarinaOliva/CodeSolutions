@@ -21,6 +21,10 @@ app.use(methodOverride('_method'));
 // Carpeta pública para archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Registro de cada solicitud HTTP
+const registro = require('./src/middlewares/registro');
+app.use(registro);
+
 // ======================
 // Vistas
 // ======================
