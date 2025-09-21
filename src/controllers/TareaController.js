@@ -40,6 +40,16 @@ module.exports = {
         empleadosAsignados: Array.isArray(t.empleadosAsignados) ? t.empleadosAsignados : []
       }));
 
+      // Ordenar: primero Pendiente/En progreso, al final Finalizado/Eliminada
+      tareasNormalizadas.sort((a, b) => {
+        const prioridad = { 'Pendiente': 1, 'En progreso': 2, 'Finalizado': 3, 'Eliminada': 3 };
+        // Si ambos tienen la misma prioridad, ordenar por fecha de creación
+        if ((prioridad[a.estado] || 99) === (prioridad[b.estado] || 99)) {
+          return new Date(a.fechaCreacion) - new Date(b.fechaCreacion);
+        }
+        return (prioridad[a.estado] || 99) - (prioridad[b.estado] || 99);
+      });
+
       res.render('tareas/listar', { tareas: tareasNormalizadas, empleados, proyectos, estadosValidos });
     } catch (error) {
       console.error('Error listando tareas:', error);
