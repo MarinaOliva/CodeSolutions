@@ -77,7 +77,7 @@ module.exports = {
 
       const contenido = proyectos.map(proy => {
         const tareasProyecto = tareas.filter(t => t.proyectoId === proy.id);
-        const finalizadas = tareasProyecto.filter(t => t.estado === "finalizada").length;
+        const finalizadas = tareasProyecto.filter(t => t.estado === "Finalizado").length;
 
         return {
           proyectoId: proy.id,
