@@ -1,107 +1,49 @@
 // Importación de módulos
-const fs = require('fs').promises; 
-const path = require('path');
-const Proyecto = require('../models/Proyecto'); 
+const Proyecto = require('../models/Proyecto');
+const Empleado = require('../models/Empleado');
+const Tarea = require('../models/Tarea');
 
-// Rutas de los archivos JSON
-const archivoProyectos = path.join(__dirname, '../data/proyectos.json');
-const archivoTareas = path.join(__dirname, '../data/tareas.json');
-const archivoEmpleados = path.join(__dirname, '../data/empleados.json');
-
-// Lista de estados válidos (coincide con el modelo)
+// Lista de estados válidos
 const estadosValidos = ["Pendiente", "En progreso", "Finalizado", "Cancelado"];
-
-// Función para obtener todos los proyectos
-const obtenerProyectos = async () => {
-  try {
-    const datos = await fs.readFile(archivoProyectos, 'utf8');
-    const proyectos = JSON.parse(datos);
-    return proyectos.filter(p => p?.nombre); 
-  } catch (error) {
-    console.error('Error leyendo proyectos:', error);
-    await fs.writeFile(archivoProyectos, '[]');
-    return [];
-  }
-};
-
-// Función para guardar proyectos en el JSON
-const guardarProyectos = async (proyectos) => {
-  await fs.writeFile(archivoProyectos, JSON.stringify(proyectos, null, 2));
-};
-
-// Función para leer tareas
-const obtenerTareas = async () => {
-  try {
-    const datos = await fs.readFile(archivoTareas, 'utf8');
-    return JSON.parse(datos);
-  } catch (error) {
-    console.error('Error leyendo tareas:', error);
-    await fs.writeFile(archivoTareas, '[]');
-    return [];
-  }
-};
-
-// Función para guardar tareas
-const guardarTareas = async (tareas) => {
-  await fs.writeFile(archivoTareas, JSON.stringify(tareas, null, 2));
-};
-
-// Función para leer empleados
-const obtenerEmpleados = async () => {
-  try {
-    const datos = await fs.readFile(archivoEmpleados, 'utf8');
-    return JSON.parse(datos);
-  } catch (error) {
-    console.error('Error leyendo empleados:', error);
-    await fs.writeFile(archivoEmpleados, '[]');
-    return [];
-  }
-};
 
 // Exportación del controlador con operaciones CRUD
 module.exports = {
- // Listar todos los proyectos
-listar: async (req, res) => {
-  try {
-    const proyectos = await obtenerProyectos();
-    const empleados = await obtenerEmpleados();
-    const tareas = await obtenerTareas();
 
-    const proyectosConNombres = proyectos
-      .filter(p => p.estado !== 'Cancelado' && p.estado !== 'Finalizado')
-      .map(proyecto => {
+  // Listar todos los proyectos
+  listar: async (req, res) => {
+    try {
+      const proyectos = await Proyecto.find({ estado: { $nin: ['Cancelado', 'Finalizado'] } }).lean();
+      const empleados = await Empleado.find().lean();
+      const tareas = await Tarea.find().lean();
+
+      const proyectosConNombres = proyectos.map(proyecto => {
         // IDs de empleados asignados manualmente
-        const idsManual = proyecto.empleadosAsignados || [];
+        const idsManual = proyecto.empleadosAsignados?.map(e => e.toString()) || [];
         // IDs de empleados de tareas de este proyecto
         const idsDeTareas = tareas
-          .filter(t => t.proyectoId === proyecto.id)
-          .flatMap(t => t.empleadosAsignados || []);
+          .filter(t => t.proyectoId?.toString() === proyecto._id.toString())
+          .flatMap(t => t.empleadosAsignados?.map(e => e.toString()) || []);
         // Unir y eliminar duplicados
         const idsUnidos = [...new Set([...idsManual, ...idsDeTareas])];
-        //Obtener objetos de empleados
+        // Obtener objetos de empleados
         const empleadosAsignados = empleados
-          .filter(e => idsUnidos.includes(e.id))
-          .map(e => ({ nombre: e.nombre, rol: e.rol, id: e.id }));
+          .filter(e => idsUnidos.includes(e._id.toString()))
+          .map(e => ({ nombre: e.nombre, rol: e.rol, id: e._id }));
 
         return { ...proyecto, empleadosAsignados };
       });
 
-    
+      res.render('proyectos/listar', { proyectos: proyectosConNombres });
+    } catch (error) {
+      console.error('Error listando proyectos:', error);
+      res.render('proyectos/listar', { proyectos: [] });
+    }
+  },
 
-
-    res.render('proyectos/listar', { proyectos: proyectosConNombres });
-  } catch (error) {
-    console.error('Error listando proyectos:', error);
-    res.render('proyectos/listar', { proyectos: [] });
-  }
-},
-
-
-
-  // Mostrar formulario de creación
+  // Mostrar formulario de creación 
   mostrarFormularioCrear: async (req, res) => {
     try {
-      const empleados = await obtenerEmpleados();
+      const empleados = await Empleado.find().lean();
       res.render('proyectos/crear', { empleados, estadosValidos, datos: {} });
     } catch (error) {
       console.error('Error cargando empleados para crear proyecto:', error);
@@ -109,26 +51,51 @@ listar: async (req, res) => {
     }
   },
 
-  // Mostrar formulario de edición con los datos del proyecto
+  // Función mostrarFormularioEditar:
+  // Carga la lista unificada de empleados
   mostrarFormularioEditar: async (req, res) => {
     try {
-      const proyectos = await obtenerProyectos();
-      const proyecto = proyectos.find(p => p.id === req.params.id);
+      const proyecto = await Proyecto.findById(req.params.id).lean();
+      const empleados = await Empleado.find().lean();
+      const tareas = await Tarea.find({ proyectoId: req.params.id }).lean();
 
-      const empleados = await obtenerEmpleados();
-      res.render('proyectos/editar', { proyecto, empleados, estadosValidos });
+      // Lógica de unificación:
+      // IDs de empleados asignados manualmente
+      const idsManual = proyecto.empleadosAsignados?.map(e => e.toString()) || [];
+      // IDs de empleados de tareas de este proyecto
+      const idsDeTareas = tareas
+        .flatMap(t => t.empleadosAsignados?.map(e => e.toString()) || []);
+      // Unir y eliminar duplicados
+      const idsUnidos = [...new Set([...idsManual, ...idsDeTareas])];
+
+      //Proyecto para mostrar en la vista
+      const proyectoParaVista = {
+        ...proyecto,
+        empleadosAsignados: idsUnidos
+      };
+
+      res.render('proyectos/editar', {
+        proyecto: proyectoParaVista, // Pasa el proyecto modificado
+        empleados,
+        estadosValidos
+      });
+
     } catch (error) {
       console.error('Error cargando formulario de edición:', error);
-      res.render('proyectos/editar', { proyecto: null, empleados: [], estadosValidos });
+      // En caso de error, enviar un objeto 'proyecto' vacío o parcial
+      const empleadosFallback = await Empleado.find().lean();
+      res.render('proyectos/editar', {
+        proyecto: { ...req.body, _id: req.params.id, empleadosAsignados: [] },
+        empleados: empleadosFallback,
+        estadosValidos
+      });
     }
   },
 
-  // Crear un nuevo proyecto
+  // Crear un nuevo proyecto 
   crear: async (req, res) => {
     try {
-      const proyectos = await obtenerProyectos();
-
-      // Normalizamos los empleados asignados (checkboxes)
+      // Normalizar los empleados asignados (checkboxes)
       let empleadosAsignados = [];
       if (req.body.empleadosAsignados) {
         empleadosAsignados = Array.isArray(req.body.empleadosAsignados)
@@ -136,69 +103,127 @@ listar: async (req, res) => {
           : [req.body.empleadosAsignados];
       }
 
-      const nuevoProyecto = new Proyecto(
-        req.body.nombre,
-        req.body.descripcion,
-        req.body.cliente,
-        req.body.estado || 'Pendiente',
+      const nuevoProyecto = new Proyecto({
+        nombre: req.body.nombre,
+        descripcion: req.body.descripcion,
+        cliente: req.body.cliente,
+        estado: req.body.estado || 'Pendiente',
         empleadosAsignados
-      );
+      });
 
-      proyectos.push(nuevoProyecto);
-      await guardarProyectos(proyectos);
+      await nuevoProyecto.save();
 
-      console.log('Proyecto creado correctamente:', nuevoProyecto); // para debug
+      console.log('Proyecto creado correctamente:', nuevoProyecto);
       res.redirect('/proyectos');
     } catch (error) {
-      console.error('Error al crear proyecto:', error); // para debug
-      const empleados = await obtenerEmpleados();
+      console.error('Error al crear proyecto:', error);
+      const empleados = await Empleado.find().lean();
       res.render('proyectos/crear', { error: true, datos: req.body, empleados, estadosValidos });
     }
   },
 
-  // Actualizar un proyecto existente
+  // FUNCIÓN actualizar
+  // Compara la lista nueva con la vieja y actualiza proyecto + tareas
   actualizar: async (req, res) => {
-    try {
-      const proyectos = await obtenerProyectos();
+    const idProyecto = req.params.id;
 
-      // Normalizamos los empleados asignados (checkboxes)
-      let empleadosAsignados = [];
+    try {
+      // Obtener la NUEVA lista de IDs del formulario 
+      let idsNuevos = [];
       if (req.body.empleadosAsignados) {
-        empleadosAsignados = Array.isArray(req.body.empleadosAsignados)
+        idsNuevos = Array.isArray(req.body.empleadosAsignados)
           ? req.body.empleadosAsignados
           : [req.body.empleadosAsignados];
       }
+      idsNuevos = idsNuevos.map(String);
 
-      const actualizados = proyectos.map(p =>
-        p.id === req.params.id
-          ? {
-              ...p,
-              nombre: req.body.nombre || p.nombre,
-              descripcion: req.body.descripcion || p.descripcion,
-              cliente: req.body.cliente || p.cliente,
-              estado: req.body.estado || p.estado,
-              empleadosAsignados
-            }
-          : p
+
+      // Obtener la lista vieja de IDs 
+      const proyectoActual = await Proyecto.findById(idProyecto); // Sin .lean()
+      const tareas = await Tarea.find({ proyectoId: idProyecto }).lean();
+
+      const idsManual = proyectoActual.empleadosAsignados?.map(e => e.toString()) || [];
+      const idsDeTareas = tareas
+        .flatMap(t => t.empleadosAsignados?.map(e => e.toString()) || []);
+      const idsViejosUnidos = [...new Set([...idsManual, ...idsDeTareas])];
+
+      // Empleados a quitar 
+      const idsParaQuitar = idsViejosUnidos.filter(id => !idsNuevos.includes(id));
+
+      // Empleados a agregar
+      const idsParaAgregar = idsNuevos.filter(id => !idsManual.includes(id));
+
+
+      // Quitar empleados
+      if (idsParaQuitar.length > 0) {
+        // Quitar de las tareas del proyecto
+        await Tarea.updateMany(
+          { proyectoId: idProyecto },
+          { $pull: { empleadosAsignados: { $in: idsParaQuitar } } } 
+        );
+      }
+
+      // Actualizar el proyecto
+      const idsManualActualizados = idsManual
+        .filter(id => !idsParaQuitar.includes(id)) 
+        .concat(idsParaAgregar);
+
+      const nuevaListaManual = [...new Set(idsManualActualizados)];
+      
+      // Capturar el nuevo estado que viene del formulario
+      const nuevoEstado = req.body.estado;
+
+      await Proyecto.findByIdAndUpdate(
+        idProyecto,
+        {
+          nombre: req.body.nombre,
+          descripcion: req.body.descripcion,
+          cliente: req.body.cliente,
+          estado: nuevoEstado, 
+          empleadosAsignados: nuevaListaManual
+        },
+        { new: true, runValidators: true }
       );
 
-      await guardarProyectos(actualizados);
+      // Actualización de tareas acorde al estado del proyecto
+      if (nuevoEstado === 'Finalizado' || nuevoEstado === 'Cancelado') {
+            let estadoTareaNuevo = (nuevoEstado === 'Finalizado') ? 'Finalizado' : 'Eliminada';
+
+        await Tarea.updateMany(
+          { proyectoId: idProyecto, estado: { $nin: ['Finalizado', 'Eliminada'] } },
+          { $set: { estado: estadoTareaNuevo } }
+        );
+      }
+     
       res.redirect('/proyectos');
+
     } catch (error) {
       console.error('Error al actualizar proyecto:', error);
-      const empleados = await obtenerEmpleados();
-      res.render('proyectos/editar', { error: true, proyecto: req.body, empleados, estadosValidos });
+      const empleados = await Empleado.find().lean();
+      res.render('proyectos/editar', {
+        error: true,
+        proyecto: { ...req.body, _id: idProyecto },
+        empleados,
+        estadosValidos
+      });
     }
   },
 
-  // Eliminar un proyecto (baja lógica)
+  // Eliminar un proyecto (baja lógica) 
   eliminar: async (req, res) => {
     try {
-      const proyectos = await obtenerProyectos();
-      const actualizados = proyectos.map(p =>
-        p.id === req.params.id ? { ...p, estado: 'Cancelado' } : p
+      const idProyecto = req.params.id; // Obtenemos el ID
+
+      // 1. Marcar el proyecto como Cancelado
+      await Proyecto.findByIdAndUpdate(idProyecto, { estado: 'Cancelado' });
+
+      // Actualización de tareas acorde al estado del proyecto
+      await Tarea.updateMany(
+        { proyectoId: idProyecto, estado: { $nin: ['Finalizado', 'Eliminada'] } },
+        { $set: { estado: 'Eliminada' } }
       );
-      await guardarProyectos(actualizados);
+  
+
       res.redirect('/proyectos');
     } catch (error) {
       console.error('Error al eliminar proyecto:', error);
@@ -206,26 +231,24 @@ listar: async (req, res) => {
     }
   },
 
-  // Quitar un empleado de un proyecto y de sus tareas
+  // Quitar un empleado de un proyecto y de sus tareas 
   quitarEmpleado: async (req, res) => {
     const { idProyecto, idEmpleado } = req.params;
     try {
-      const proyectos = await obtenerProyectos();
-      const proyecto = proyectos.find(p => p.id === idProyecto);
+      const proyecto = await Proyecto.findById(idProyecto);
       if (!proyecto) return res.status(404).send('Proyecto no encontrado');
 
       // Quitar del proyecto
-      proyecto.empleadosAsignados = proyecto.empleadosAsignados?.filter(eId => eId !== idEmpleado) || [];
-      await guardarProyectos(proyectos);
+      proyecto.empleadosAsignados = proyecto.empleadosAsignados.filter(
+        eId => eId.toString() !== idEmpleado
+      );
+      await proyecto.save();
 
       // Quitar de las tareas del proyecto
-      const tareas = await obtenerTareas();
-      const tareasActualizadas = tareas.map(t =>
-        t.proyectoId === idProyecto && t.empleadoId === idEmpleado
-          ? { ...t, empleadoId: null }
-          : t
+      await Tarea.updateMany(
+        { proyectoId: idProyecto },
+        { $pull: { empleadosAsignados: idEmpleado } }
       );
-      await guardarTareas(tareasActualizadas);
 
       res.redirect(`/proyectos/editar/${idProyecto}`);
     } catch (error) {
