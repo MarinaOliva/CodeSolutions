@@ -1,7 +1,18 @@
 extends layouts/main
 
 block contenido
-  .error-container
-    h1 #{titulo}
-    p #{mensajeError}
-    a.btn(href="/") Volver al inicio
+  .row.justify-content-center
+    .col-md-8
+      //- Envolver el error en un contenedor centrado
+      .text-center.p-5.bg-white.rounded.shadow-sm.border
+        
+        //- Título del error (ej: 404 o Error)
+        h1.display-4.text-danger #{titulo || 'Error'}
+        
+        //- Mensaje de error
+        p.lead.text-muted #{mensajeError || 'Ha ocurrido un error inesperado.'}
+        
+        hr.my-4
+        
+        //- Botón para volver al inicio
+        a.btn.btn-primary.btn-lg(href="/") Volver al inicio

@@ -1,12 +1,42 @@
+//- Página de inicio
 extends layouts/main
 
-//- Página de inicio
 block contenido
-  h1 Bienvenido a Code Solutions
-  p Sistema de gestión de proyectos
-
-  .menu
-    a.btn(href="/empleados") Gestionar Empleados
-    a.btn(href="/proyectos") Gestionar Proyectos
-    a.btn(href="/tareas") Gestionar Tareas
-    a.btn(href="/reportes") Ver Reportes
+  //- Bienvenida
+  .container-fluid.bg-white.p-5.rounded.shadow-sm.border.mb-4
+    h1.display-4 Bienvenido a Code Solutions
+    p.lead Sistema de gestión de proyectos.
+  
+  //- Grilla de menú/dashboard
+  .row
+    //- Tarjeta 1: Empleados
+    .col-md-6.col-lg-3.mb-3
+      .card.h-100
+        .card-body.text-center
+          h5.card-title Gestionar Empleados
+          p.card-text Ver, crear y editar empleados.
+          a.btn.btn-primary(href="/empleados") Ir a Empleados
+          
+    //- Tarjeta 2: Proyectos
+    .col-md-6.col-lg-3.mb-3
+      .card.h-100
+        .card-body.text-center
+          h5.card-title Gestionar Proyectos
+          p.card-text Definir y asignar proyectos.
+          a.btn.btn-primary(href="/proyectos") Ir a Proyectos
+          
+    //- Tarjeta 3: Tareas
+    .col-md-6.col-lg-3.mb-3
+      .card.h-100
+        .card-body.text-center
+          h5.card-title Gestionar Tareas
+          p.card-text Administrar el trabajo diario.
+          a.btn.btn-primary(href="/tareas") Ir a Tareas
+          
+    //- Tarjeta 4: Reportes
+    .col-md-6.col-lg-3.mb-3
+      .card.h-100
+        .card-body.text-center
+          h5.card-title Ver Reportes
+          p.card-text Analizar el progreso y rendimiento.
+          a.btn.btn-primary(href="/reportes") Ir a Reportes

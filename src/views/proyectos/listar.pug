@@ -1,50 +1,61 @@
 extends ../layouts/main
 
 block contenido 
-  h1 Lista de Proyectos
-  
-  a.btn.btn-primary.mb-3(href="/proyectos/crear") + Nuevo Proyecto
+  //- Cabecera de página
+  .d-flex.justify-content-between.align-items-center.mb-3
+    h1 Lista de Proyectos
+    a.btn.btn-success(href="/proyectos/crear") + Nuevo Proyecto
 
-  if proyectos && proyectos.length > 0
-    table.table
-      thead
-        tr
-          th Nombre
-          th Cliente
-          th Estado
-          th Acciones
-      tbody
-        each proyecto in proyectos
-          //- Fila principal del proyecto
-          tr
-            td= proyecto.nombre
-            td= proyecto.cliente
-            td= proyecto.estado
-            td
-              // Botón de detalles en la columna Acciones
-              button.expand-btn.btn.btn-sm.btn-info(
-                data-id=proyecto._id 
-                type="button"
-              ) Detalles
-              
-              // Botón Editar
-              a.btn.btn-sm.btn-warning(href=`/proyectos/editar/${proyecto._id}`) Editar
-              
-              // Form para eliminar usando method-override
-              form(action=`/proyectos/eliminar/${proyecto._id}?_method=DELETE` method="POST" style="display:inline")
-                button.btn.btn-sm.btn-danger(type="submit" onclick="return confirm('¿Estás seguro que deseas eliminar este proyecto?')") Eliminar
+  //- Envolver la tabla en "card"
+  .card.shadow-sm
+    .card-body
+      if proyectos && proyectos.length > 0
+        .table-responsive
+          table.table.table-hover.table-striped.align-middle
+            thead.table-light
+              tr
+                th Nombre
+                th Cliente
+                th Estado
+                th.text-end Acciones
+            tbody
+              each proyecto in proyectos
+                //- Fila principal
+                tr
+                  td= proyecto.nombre
+                  td= proyecto.cliente
+                  td
+                    //- Badges para estados
+                    if proyecto.estado === 'En progreso'
+                      span.badge.bg-primary= proyecto.estado
+                    else if proyecto.estado === 'Pendiente'
+                      span.badge.bg-warning.text-dark= proyecto.estado
+                    else
+                      span.badge.bg-secondary= proyecto.estado
+                  
+                  td.text-end
+                    .btn-group(role="group")
+                      button.expand-btn.btn.btn-sm.btn-outline-info(
+                        data-id=proyecto._id 
+                        type="button"
+                      ) Detalles
+                      
+                      a.btn.btn-sm.btn-outline-warning(href=`/proyectos/editar/${proyecto._id}`) Editar
+                      
+                      form(action=`/proyectos/eliminar/${proyecto._id}?_method=DELETE` method="POST" style="display:inline")
+                        button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('¿Estás seguro que deseas eliminar este proyecto?')") Eliminar
 
-          //- Fila de detalles oculta
-          tr.detalle(id=`detalle-${proyecto._id}` style="display:none")
-            td(colspan="4")
-              p Descripción: #{proyecto.descripcion}
-              p Fecha de creación: #{new Date(proyecto.fechaCreacion).toLocaleDateString()}
-              p Empleados asignados:
-                if proyecto.empleadosAsignados && proyecto.empleadosAsignados.length > 0
-                  ul
-                    each empleado in proyecto.empleadosAsignados
-                      li= `${empleado.nombre} (${empleado.rol})`
-                else
-                  | Ninguno
-  else
-    p.aviso No hay proyectos registrados.
+                //- Fila de detalles oculta
+                tr.detalle(id=`detalle-${proyecto._id}` style="display:none")
+                  td.bg-light-subtle(colspan="4")
+                    p #[strong Descripción:] #{proyecto.descripcion}
+                    p #[strong Fecha de creación:] #{new Date(proyecto.fechaCreacion).toLocaleDateString()}
+                    p #[strong Empleados asignados:]
+                    if proyecto.empleadosAsignados && proyecto.empleadosAsignados.length > 0
+                      ul
+                        each empleado in proyecto.empleadosAsignados
+                          li= `${empleado.nombre} (${empleado.rol})`
+                    else
+                      | Ninguno
+      else
+        .alert.alert-info.mb-0 No hay proyectos registrados.

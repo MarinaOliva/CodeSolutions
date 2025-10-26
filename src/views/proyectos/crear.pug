@@ -1,38 +1,60 @@
 extends ../layouts/main
 
 block contenido
-  h1 Nuevo Proyecto
+  .row.justify-content-center
+    .col-lg-8
 
-  form(action="/proyectos/crear" method="POST")
-    div.form-group
-      label(for="nombre") Nombre del proyecto
-      input.form-control(type="text" name="nombre" id="nombre" required value=datos && datos.nombre ? datos.nombre : '')
+      .card.shadow-sm
+        .card-header
+          h1 Nuevo Proyecto
+        
+        .card-body
+          if error
+            .alert.alert-danger Hubo un error al crear el proyecto.
 
-    div.form-group
-      label(for="cliente") Cliente
-      input.form-control(type="text" name="cliente" id="cliente" required value=datos && datos.cliente ? datos.cliente : '')
+          form(action="/proyectos/crear" method="POST")
+            
+            .mb-3
+              label.form-label(for="nombre") Nombre del proyecto
+              input.form-control(type="text" name="nombre" id="nombre" required value=datos && datos.nombre ? datos.nombre : '')
 
-    div.form-group
-      label(for="estado") Estado
-      select.form-control(name="estado" id="estado" required)
-        each estado in estadosValidos
-          option(value=estado selected=(datos && datos.estado === estado))= estado
+            .mb-3
+              label.form-label(for="cliente") Cliente
+              input.form-control(type="text" name="cliente" id="cliente" required value=datos && datos.cliente ? datos.cliente : '')
 
-    div.form-group
-      label(for="descripcion") Descripción
-      textarea.form-control(name="descripcion" id="descripcion" rows="3")= datos && datos.descripcion ? datos.descripcion : ''
+            .row
+              .col-md-6.mb-3
+                label.form-label(for="estado") Estado
+                select.form-select(name="estado" id="estado" required)
+                  each estado in estadosValidos
+                    option(value=estado selected=(datos && datos.estado === estado))= estado
+              
+              .col-md-6.mb-3
+                //- (Espacio)
 
-    div.form-group
-      label Empleados asignados
-      div.empleados-checkboxes
-        if empleados && empleados.length > 0
-          each empleado in empleados
-            label.checkbox-item
-              input(type="checkbox" name="empleadosAsignados" value=empleado.id checked=(datos && datos.empleadosAsignados && datos.empleadosAsignados.includes(empleado.id)))
-              | #{empleado.nombre} (#{empleado.rol})
+            .mb-3
+              label.form-label(for="descripcion") Descripción
+              textarea.form-control(name="descripcion" id="descripcion" rows="3")= datos && datos.descripcion ? datos.descripcion : ''
 
-        else
-          p No hay empleados disponibles
+            .mb-3
+              label.form-label Empleados asignados
+              .border.rounded.p-3(style="max-height: 200px; overflow-y: auto;")
+                if empleados && empleados.length > 0
+                  each empleado in empleados
+                    .form-check
+                      input.form-check-input(
+                        type="checkbox", 
+                        name="empleadosAsignados", 
+                        value=empleado._id, 
+                        id=`emp-${empleado._id}`,
+                        checked=(datos && datos.empleadosAsignados && datos.empleadosAsignados.includes(empleado._id.toString()))
+                      )
+                      label.form-check-label(for=`emp-${empleado._id}`)= `${empleado.nombre} (${empleado.rol})`
+                else
+                  p.text-muted.mb-0 No hay empleados disponibles
 
-    button.btn.btn-primary(type="submit") Crear Proyecto
-    a.btn.btn-secondary(href="/proyectos") Cancelar
+            hr
+
+            .text-end
+              a.btn.btn-secondary.me-2(href="/proyectos") Cancelar
+              button.btn.btn-success(type="submit") Crear Proyecto

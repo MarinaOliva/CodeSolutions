@@ -1,9 +1,21 @@
 //- Header con menú de navegación
 header
-  nav
-    ul
-      li: a(href="/") Inicio
-      li: a(href="/empleados") Empleados
-      li: a(href="/proyectos") Proyectos
-      li: a(href="/tareas") Tareas
-      li: a(href="/reportes") Reportes
+  nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
+    .container
+      a.navbar-brand(href="/") Code Solutions
+      
+      button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#mainNavbar")
+        span.navbar-toggler-icon
+        
+      .collapse.navbar-collapse#mainNavbar
+        ul.navbar-nav.me-auto.mb-2.mb-lg-0
+          li.nav-item
+            a.nav-link(href="/") Inicio
+          li.nav-item
+            a.nav-link(href="/empleados") Empleados
+          li.nav-item
+            a.nav-link(href="/proyectos") Proyectos
+          li.nav-item
+            a.nav-link(href="/tareas") Tareas
+          li.nav-item
+            a.nav-link(href="/reportes") Reportes
