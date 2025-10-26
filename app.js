@@ -1,3 +1,6 @@
+// Cargar variables de entorno
+require('dotenv').config();
+
 // Dependencias principales
 const express = require('express');
 const path = require('path');
