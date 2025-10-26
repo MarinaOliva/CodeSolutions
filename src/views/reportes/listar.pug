@@ -1,24 +1,48 @@
 extends ../layouts/main
 
 block contenido
-  h1 #{titulo}
+  .card.shadow-sm
+    .card-header
+      h1.mb-0 #{titulo}
 
-  //- Mostrar tipo de reporte y fecha
-  p Tipo de reporte: #{reporte.tipo}
-  p Fecha de generación: #{new Date(reporte.fechaGeneracion).toLocaleString()}
+    .card-body
+      //- Metadata del reporte
+      h6.card-subtitle.mb-2.text-muted Tipo: #{reporte.tipo}
+      small.text-muted Fecha de generación: #{new Date(reporte.fechaGeneracion).toLocaleString()}
+      
+      hr
 
-  //- Mostrar contenido según el tipo de reporte
-  if reporte.tipo === 'Horas trabajadas por empleado'
-    each emp in reporte.contenido
-      h2 #{emp.nombreEmpleado} (#{emp.horasRegistradasTotales} horas)
-      if emp.tareas.length > 0
-        ul
-          each t in emp.tareas
-            li #{t.nombreTarea} - #{t.horasRegistradas} horas
-      else
-        p No tiene tareas registradas.
+      if reporte.tipo === 'Horas trabajadas por empleado'
+        //- Usar un ListGroup para los empleados
+        .list-group
+          each emp in reporte.contenido
+            .list-group-item
+              .d-flex.w-100.justify-content-between
+                h5.mb-1 #{emp.nombreEmpleado}
+                //- Badge para las horas totales
+                span.badge.bg-primary.rounded-pill #{emp.horasRegistradasTotales} horas
+              
+              if emp.tareas.length > 0
+                //- Lista de tareas anidada
+                ul.mt-2.mb-0
+                  each t in emp.tareas
+                    li 
+                      | #{t.nombreTarea} - 
+                      em.text-muted #{t.horasRegistradas} horas
+              else
+                p.text-muted.mb-0 No tiene tareas registradas.
 
-  else if reporte.tipo === 'Avance de proyectos'
-    each proy in reporte.contenido
-      h2 #{proy.nombreProyecto} - #{proy.porcentajeAvance}% completado
-      p Tareas finalizadas: #{proy.tareasFinalizadas} / #{proy.totalTareas}
+      else if reporte.tipo === 'Avance de proyectos'
+        //- Usar un ListGroup para los proyectos
+        .list-group
+          each proy in reporte.contenido
+            .list-group-item
+              .d-flex.w-100.justify-content-between
+                h5.mb-1 #{proy.nombreProyecto}
+                span.badge.bg-secondary #{proy.tareasFinalizadas} / #{proy.totalTareas} Tareas
+              
+              //- Barra de progreso de Bootstrap
+              .progress.mt-2(role="progressbar", aria-valuenow=proy.porcentajeAvance, aria-valuemin="0", aria-valuemax="100", style="height: 25px;")
+                .progress-bar.progress-bar-striped.progress-bar-animated(
+                  style=`width: ${proy.porcentajeAvance}%`
+                ) #{proy.porcentajeAvance}%

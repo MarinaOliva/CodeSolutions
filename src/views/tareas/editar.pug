@@ -1,50 +1,65 @@
 extends ../layouts/main
 
 block contenido
-  h1 Editar Tarea
+  .row.justify-content-center
+    .col-lg-8
 
-  form(action=`/tareas/editar/${tarea._id}?_method=PUT`, method="POST")
-    div.form-group
-      label(for="nombre") Nombre de la tarea
-      input.form-control(type="text" name="nombre" id="nombre" required value=tarea.nombre)
+      .card.shadow-sm
+        .card-header
+          h1 Editar Tarea
+        
+        .card-body
+          if error
+            .alert.alert-danger Hubo un error al actualizar la tarea.
 
-    div.form-group
-      label(for="proyectoId") Proyecto
-      select.form-control(name="proyectoId" id="proyectoId" required)
-        each proyecto in proyectos
-          option(value=proyecto._id, selected=(tarea.proyectoId && tarea.proyectoId._id.toString() === proyecto._id.toString()))= proyecto.nombre
+          form(action=`/tareas/editar/${tarea._id}?_method=PUT`, method="POST")
+            
+            .mb-3
+              label.form-label(for="nombre") Nombre de la tarea
+              input.form-control(type="text" name="nombre" id="nombre" required value=tarea.nombre)
 
-    div.form-group
-      label(for="estado") Estado
-      select.form-control(name="estado" id="estado" required)
-        each estado in estadosValidos
-          if estado !== 'Eliminada'
-            option(value=estado selected=(tarea.estado === estado))= estado
+            .row
+              .col-md-6.mb-3
+                label.form-label(for="proyectoId") Proyecto
+                select.form-select(name="proyectoId" id="proyectoId" required)
+                  each proyecto in proyectos
+                    option(value=proyecto._id, selected=(tarea.proyectoId && tarea.proyectoId._id.toString() === proyecto._id.toString()))= proyecto.nombre
 
-    div.form-group
-      label Horas Estimadas
-      input.form-control(type="number" name="horasEstimadas" id="horasEstimadas" min="0" value=tarea.horasEstimadas)
+              .col-md-6.mb-3
+                label.form-label(for="estado") Estado
+                select.form-select(name="estado" id="estado" required)
+                  each estado in estadosValidos
+                    if estado !== 'Eliminada'
+                      option(value=estado selected=(tarea.estado === estado))= estado
 
-    div.form-group
-      label Horas Registradas
-      input.form-control(type="number" name="horasRegistradas" id="horasRegistradas" min="0" value=tarea.horasRegistradas)
+            .row
+              .col-md-6.mb-3
+                label.form-label(for="horasEstimadas") Horas Estimadas
+                input.form-control(type="number" name="horasEstimadas" id="horasEstimadas" min="0" value=tarea.horasEstimadas)
 
-    div.form-group
-      label Empleados asignados
-      div.empleados-checkboxes
-        if empleados && empleados.length > 0
-          each empleado in empleados
-            label.checkbox-item
-              
-              input(
-                type="checkbox",
-                name="empleadosAsignados",
-                value=empleado._id,
-                checked=(tarea.empleadosAsignados && tarea.empleadosAsignados.some(e => e && e._id.toString() === empleado._id.toString()))
-              )
-              | #{empleado.nombre} (#{empleado.rol})
-        else
-          p No hay empleados disponibles
+              .col-md-6.mb-3
+                label.form-label(for="horasRegistradas") Horas Registradas
+                input.form-control(type="number" name="horasRegistradas" id="horasRegistradas" min="0" value=tarea.horasRegistradas)
 
-    button.btn.btn-primary(type="submit") Guardar Cambios
-    a.btn.btn-secondary(href="/tareas") Cancelar
+            .mb-3
+              label.form-label Empleados asignados
+              .border.rounded.p-3(style="max-height: 200px; overflow-y: auto;")
+                if empleados && empleados.length > 0
+                  each empleado in empleados
+                    .form-check
+                      input.form-check-input(
+                        type="checkbox",
+                        name="empleadosAsignados",
+                        value=empleado._id,
+                        id=`emp-${empleado._id}`,
+                        checked=(tarea.empleadosAsignados && tarea.empleadosAsignados.some(e => e && e._id.toString() === empleado._id.toString()))
+                      )
+                      label.form-check-label(for=`emp-${empleado._id}`)= `${empleado.nombre} (${empleado.rol})`
+                else
+                  p.text-muted.mb-0 No hay empleados disponibles
+            
+            hr
+
+            .text-end
+              a.btn.btn-secondary.me-2(href="/tareas") Cancelar
+              button.btn.btn-primary(type="submit") Guardar Cambios

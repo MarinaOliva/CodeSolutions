@@ -1,11 +1,18 @@
 extends ../layouts/main
 
 block contenido
-  h1 #{titulo}
-
-  p Seleccione el reporte que desea generar:
-
-  ul
-    each opcion in opciones
-      li
-        a(href=opcion.url) #{opcion.nombre}
+  .row.justify-content-center
+    .col-lg-6
+     
+      .card.shadow-sm
+        .card-header
+          h1.mb-0 #{titulo}
+        
+        .card-body
+          p.card-text Seleccione el reporte que desea generar:
+          
+          //- Usar un ListGroup para el menú
+          .list-group
+            each opcion in opciones
+              //- Efecto hover
+              a.list-group-item.list-group-item-action(href=opcion.url) #{opcion.nombre}

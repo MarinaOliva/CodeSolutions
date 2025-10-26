@@ -1,20 +1,30 @@
 extends ../layouts/main
 
 block contenido
-  h1 Historial de Reportes
-
-  table
-    thead
-      tr
-        th ID
-        th Tipo
-        th Fecha
-        th Acciones
-    tbody
-      each r in reportes
-        tr
-          td #{r._id}
-          td #{r.tipo}
-          td #{new Date(r.fechaGeneracion).toLocaleString()}
-          td 
-            a(href=`/reportes/detalle/${r._id}`) Ver detalle
+  //- Cabecera de página
+  .d-flex.justify-content-between.align-items-center.mb-3
+    h1 Historial de Reportes
+  
+  .card.shadow-sm
+    .card-body
+      if reportes && reportes.length > 0
+        .table-responsive
+          table.table.table-hover.table-striped.align-middle
+            thead.table-light
+              tr
+                th ID
+                th Tipo
+                th Fecha
+                th.text-end Acciones
+            tbody
+              each r in reportes
+                tr
+                  td 
+                    code= r._id
+                  td= r.tipo
+                  td= new Date(r.fechaGeneracion).toLocaleString()
+                  td.text-end
+                    a.btn.btn-sm.btn-outline-primary(href=`/reportes/detalle/${r._id}`) Ver detalle
+      else
+        //- Alerta si no hay reportes
+        .alert.alert-info.mb-0 No hay reportes generados.

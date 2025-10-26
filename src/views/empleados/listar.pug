@@ -2,33 +2,44 @@
 extends ../layouts/main
 
 block contenido
-  h1 Lista de Empleados
-  a.btn(href="/empleados/crear") + Nuevo Empleado
+  //- Cabecera de página
+  .d-flex.justify-content-between.align-items-center.mb-3
+    h1 Lista de Empleados
+    a.btn.btn-success(href="/empleados/crear") + Nuevo Empleado
 
-  table
-    thead
-      tr
-        th Nombre
-        th Email
-        th Rol
-        th Área
-        th Acciones
-    tbody
-      each empleado in empleados
-        tr
-          td #{empleado.nombre}
-          td #{empleado.email}
-          td #{empleado.rol}
-          td #{empleado.area}
-          td
-            // Botón para expandir detalles
-            button.btn.expand-btn(data-id=empleado._id) Detalles
-            a.btn(href=`/empleados/editar/${empleado._id}`) Editar
-            form(action=`/empleados/eliminar/${empleado._id}?_method=DELETE`, method="POST", style="display:inline")
-              button.btn.eliminar(type="submit", class="btn-eliminar") Eliminar
+  //- Envolver en "card"
+  .card.shadow-sm
+    .card-body
+      if empleados && empleados.length > 0
+        .table-responsive
+          table.table.table-hover.table-striped.align-middle
+            thead.table-light
+              tr
+                th Nombre
+                th Email
+                th Rol
+                th Área
+                th.text-end Acciones
+            tbody
+              each empleado in empleados
+                tr
+                  td= empleado.nombre
+                  td= empleado.email
+                  td= empleado.rol
+                  td= empleado.area
+                  td.text-end
+                    //- Agrupar botones
+                    .btn-group(role="group")
+                      button.expand-btn.btn.btn-sm.btn-outline-info(data-id=empleado._id) Detalles
+                      a.btn.btn-sm.btn-outline-warning(href=`/empleados/editar/${empleado._id}`) Editar
+                      form(action=`/empleados/eliminar/${empleado._id}?_method=DELETE`, method="POST", style="display:inline")
+                        button.btn.btn-sm.btn-outline-danger(type="submit", onclick="return confirm('¿Estás seguro de eliminar este empleado?')") Eliminar
 
-        // Detalles expandibles
-        tr.detalle(id='detalle-' + empleado._id, style="display:none")
-          td(colspan="5")
-            p Habilidades: #{empleado.habilidades.join(', ')}
-            p Especialidad: #{empleado.especialidad}
+                //- Detalles expandibles
+                tr.detalle(id='detalle-' + empleado._id, style="display:none")
+                  td.bg-light-subtle(colspan="5")
+                    p #[strong Habilidades:] #{empleado.habilidades ? empleado.habilidades.join(', ') : 'N/A'}
+                    p #[strong Especialidad:] #{empleado.especialidad || 'N/A'}
+      else
+        //- Alerta si no hay empleados
+        .alert.alert-info.mb-0 No hay empleados registrados.

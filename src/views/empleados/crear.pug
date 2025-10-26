@@ -1,38 +1,60 @@
-extends ../layouts/main
 //- Formulario para crear empleado
+extends ../layouts/main
+
 block contenido
-  h1 Nuevo Empleado
-  if error
-    p.error #{mensaje}
+  .row.justify-content-center
+    .col-lg-8
 
-  form(action="/empleados/crear", method="POST")
-    label Nombre:
-    input(type="text", name="nombre", value=(datos && datos.nombre) || '')
+      .card.shadow-sm
+        .card-header
+          h1 Nuevo Empleado
+        
+        .card-body
+          if error
+            .alert.alert-danger= mensaje
 
-    label Email:
-    input(type="email", name="email", value=(datos && datos.email) || '')
+          form(action="/empleados/crear", method="POST")
+            
+            .mb-3
+              label.form-label(for="nombre") Nombre:
+              input.form-control(type="text", name="nombre", id="nombre", value=(datos && datos.nombre) || '', required)
 
-    label Rol:
-    select(name="rol")
-      option(value="administrador", selected=(datos && datos.rol) === 'administrador') Administrador
-      option(value="desarrollador", selected=(datos && datos.rol) === 'desarrollador') Desarrollador
-      option(value="QA", selected=(datos && datos.rol) === 'QA') QA
-      option(value="DevOps", selected=(datos && datos.rol) === 'DevOps') DevOps
-      option(value="soporte", selected=(datos && datos.rol) === 'soporte') Soporte
-      option(value="contador", selected=(datos && datos.rol) === 'contador') Contador
+            .mb-3
+              label.form-label(for="email") Email:
+              input.form-control(type="email", name="email", id="email", value=(datos && datos.email) || '', required)
 
-    label Área:
-    select(name="area")
-      option(value="Desarrollo", selected=(datos && datos.area) === 'Desarrollo') Desarrollo
-      option(value="Administración", selected=(datos && datos.area) === 'Administración') Administración
-      option(value="Soporte", selected=(datos && datos.area) === 'Soporte') Soporte
-      option(value="Contabilidad", selected=(datos && datos.area) === 'Contabilidad') Contabilidad
+            //- Agrupar Rol y Área en una fila
+            .row
+              .col-md-6.mb-3
+                label.form-label(for="rol") Rol:
+                select.form-select(name="rol", id="rol")
+                  option(value="administrador", selected=(datos && datos.rol) === 'administrador') Administrador
+                  option(value="desarrollador", selected=(datos && datos.rol) === 'desarrollador') Desarrollador
+                  option(value="QA", selected=(datos && datos.rol) === 'QA') QA
+                  option(value="DevOps", selected=(datos && datos.rol) === 'DevOps') DevOps
+                  option(value="soporte", selected=(datos && datos.rol) === 'soporte') Soporte
+                  option(value="contador", selected=(datos && datos.rol) === 'contador') Contador
 
-    label Especialidad:
-    input(type="text", name="especialidad", value=(datos && datos.especialidad) || '')
+              .col-md-6.mb-3
+                label.form-label(for="area") Área:
+                select.form-select(name="area", id="area")
+                  option(value="Desarrollo", selected=(datos && datos.area) === 'Desarrollo') Desarrollo
+                  option(value="Administración", selected=(datos && datos.area) === 'Administración') Administración
+                  option(value="Soporte", selected=(datos && datos.area) === 'Soporte') Soporte
+                  option(value="Contabilidad", selected=(datos && datos.area) === 'Contabilidad') Contabilidad
 
-    label Habilidades (separadas por coma):
-    input(type="text", name="habilidades", value=(datos && datos.habilidades ? datos.habilidades.join(', ') : ''))
+            //- Agrupar Especialidad y Habilidades
+            .row
+              .col-md-6.mb-3
+                label.form-label(for="especialidad") Especialidad:
+                input.form-control(type="text", name="especialidad", id="especialidad", value=(datos && datos.especialidad) || '')
 
-    button.btn.btn-primary(type="submit") Guardar
-    a.btn.btn-secondary(href="/empleados") Cancelar
+              .col-md-6.mb-3
+                label.form-label(for="habilidades") Habilidades (separadas por coma):
+                input.form-control(type="text", name="habilidades", id="habilidades", value=(datos && datos.habilidades ? datos.habilidades.join(', ') : ''))
+
+            hr
+
+            .text-end
+              a.btn.btn-secondary.me-2(href="/empleados") Cancelar
+              button.btn.btn-success(type="submit") Guardar
