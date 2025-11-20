@@ -32,6 +32,13 @@ const empleadoSchema = new mongoose.Schema({
     enum: rolesValidos,
     required: true
   },
+
+  access_role: {
+  type: String,
+  enum: ["gerente_admin", "desarrollador", "soporte", "contador", "jefe_proyecto"],
+  default: "desarrollador",  
+  },
+
   habilidades: {
     type: [String],
     default: []

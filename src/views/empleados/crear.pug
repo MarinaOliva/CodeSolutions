@@ -43,6 +43,16 @@ block contenido
                   option(value="Soporte", selected=(datos && datos.area) === 'Soporte') Soporte
                   option(value="Contabilidad", selected=(datos && datos.area) === 'Contabilidad') Contabilidad
 
+            //- Campo Access Role (roles válidos)
+            .mb-3
+              label.form-label(for="access_role") Nivel de acceso:
+              select.form-select(name="access_role", id="access_role")
+                option(value="gerente_admin", selected=(datos && datos.access_role) === 'gerente_admin') Gerente administrativo
+                option(value="desarrollador", selected=(datos && datos.access_role) === 'desarrollador') Desarrollador
+                option(value="soporte", selected=(datos && datos.access_role) === 'soporte') Soporte
+                option(value="contador", selected=(datos && datos.access_role) === 'contador') Contador
+                option(value="jefe_proyecto", selected=(datos && datos.access_role) === 'jefe_proyecto') Jefe de Proyecto
+
             //- Agrupar Especialidad y Habilidades
             .row
               .col-md-6.mb-3

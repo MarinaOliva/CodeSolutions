@@ -11,7 +11,6 @@ block contenido
         
         .card-body
           if error
-            //- Usar la clase de alerta de Bootstrap
             .alert.alert-danger= mensaje
 
           form(action=`/empleados/editar/${empleado._id}?_method=PUT`, method="POST")
@@ -43,6 +42,16 @@ block contenido
                   option(value="Administración", selected=empleado.area==='Administración') Administración
                   option(value="Soporte", selected=empleado.area==='Soporte') Soporte
                   option(value="Contabilidad", selected=empleado.area==='Contabilidad') Contabilidad
+
+            //- Campo Access Role (roles válidos)
+            .mb-3
+              label.form-label(for="access_role") Nivel de acceso:
+              select.form-select(name="access_role", id="access_role")
+                option(value="gerente_admin", selected=empleado.access_role==='gerente_admin') Gerente administrativo
+                option(value="desarrollador", selected=empleado.access_role==='desarrollador') Desarrollador
+                option(value="soporte", selected=empleado.access_role==='soporte') Soporte
+                option(value="contador", selected=empleado.access_role==='contador') Contador
+                option(value="jefe_proyecto", selected=empleado.access_role==='jefe_proyecto') Jefe de Proyecto
 
             //- Agrupar Especialidad y Habilidades
             .row
