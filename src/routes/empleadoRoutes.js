@@ -1,28 +1,29 @@
-const express = require('express'); 
-const router = express.Router();  
+const express = require('express');
+const router = express.Router();
 
-// Importar el controlador de empleados
+// Controlador
 const EmpleadoController = require('../controllers/EmpleadoController');
 
-// Importar middleware de validación
+// Middlewares
 const validarCampos = require('../middlewares/verificarDatos');
+const authMiddleware = require('../middlewares/auth');
+const permit = require('../middlewares/rol');
 
-// Listar empleados (página principal)
-router.get('/', EmpleadoController.listar);
+// Listar empleados - todos logueados
+router.get('/', authMiddleware, EmpleadoController.listar);
 
-// Mostrar formulario para agregar nuevo empleado
-router.get('/crear', EmpleadoController.mostrarFormulario);
 
-// Procesar formulario de nuevo empleado con validación
-router.post('/crear', validarCampos, EmpleadoController.crear);
+// Crear empleado - solo gerente_admin
+router.get('/crear', authMiddleware, permit('gerente_admin'), EmpleadoController.mostrarFormulario);
+router.post('/crear', authMiddleware, permit('gerente_admin'), validarCampos, EmpleadoController.crear);
 
-// Mostrar formulario para editar empleado
-router.get('/editar/:id', EmpleadoController.mostrarFormularioEditar);
 
-// Guardar cambios del empleado editado
-router.put('/editar/:id', validarCampos, EmpleadoController.editar);
+// Editar empleado - solo gerente_admin
+router.get('/editar/:id', authMiddleware, permit('gerente_admin'), EmpleadoController.mostrarFormularioEditar);
+router.put('/editar/:id', authMiddleware, permit('gerente_admin'), validarCampos, EmpleadoController.editar);
 
-// Eliminar empleado
-router.delete('/eliminar/:id', EmpleadoController.eliminar);
+
+// Eliminar empleado - solo gerente_admin
+router.delete('/eliminar/:id', authMiddleware, permit('gerente_admin'), EmpleadoController.eliminar);
 
 module.exports = router;

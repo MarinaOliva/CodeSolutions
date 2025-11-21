@@ -1,28 +1,31 @@
 const express = require('express');
 const router = express.Router();
 
-// Traer el controlador de proyectos
+// Controlador
 const ProyectoController = require('../controllers/ProyectoController');
 
-// Listar todos los proyectos
-router.get('/', ProyectoController.listar);
+// Middlewares
+const authMiddleware = require('../middlewares/auth');
+const permit = require('../middlewares/rol');
 
-// Mostrar formulario para crear un proyecto
-router.get('/crear', ProyectoController.mostrarFormularioCrear);
 
-// Guardar un proyecto nuevo
-router.post('/crear', ProyectoController.crear);
+// Listar proyectos - todos logueados
+router.get('/', authMiddleware, ProyectoController.listar);
 
-// Mostrar formulario para editar un proyecto
-router.get('/editar/:id', ProyectoController.mostrarFormularioEditar);
 
-// Actualizar proyecto existente
-router.put('/editar/:id', ProyectoController.actualizar);
+// Crear proyecto - jefe_proyecto y gerente_admin
+router.get('/crear', authMiddleware, permit('jefe_proyecto', 'gerente_admin'), ProyectoController.mostrarFormularioCrear);
+router.post('/crear', authMiddleware, permit('jefe_proyecto', 'gerente_admin'), ProyectoController.crear);
 
-// Eliminar proyecto (baja lógica)
-router.delete('/eliminar/:id', ProyectoController.eliminar);
+// Editar proyecto - jefe_proyecto y gerente_admin
+router.get('/editar/:id', authMiddleware, permit('jefe_proyecto', 'gerente_admin'), ProyectoController.mostrarFormularioEditar);
+router.put('/editar/:id', authMiddleware, permit('jefe_proyecto', 'gerente_admin'), ProyectoController.actualizar);
 
-// Quitar un empleado de un proyecto
-router.delete('/:idProyecto/empleados/:idEmpleado', ProyectoController.quitarEmpleado);
+
+// Eliminar proyecto - jefe_proyecto y gerente_admin
+router.delete('/eliminar/:id', authMiddleware, permit('jefe_proyecto', 'gerente_admin'), ProyectoController.eliminar);
+
+// Quitar un empleado de un proyecto - jefe_proyecto y gerente_admin
+router.delete('/:idProyecto/empleados/:idEmpleado', authMiddleware, permit('jefe_proyecto', 'gerente_admin'), ProyectoController.quitarEmpleado);
 
 module.exports = router;

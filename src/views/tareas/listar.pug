@@ -1,58 +1,20 @@
-extends ../layouts/main
+td.text-end
+  - var puedeEditar = usuario && (
+  -   usuario.access_role === 'jefe_proyecto' ||
+  -   usuario.access_role === 'soporte' ||
+  -   (usuario.access_role === 'desarrollador' && tarea.empleadosAsignados && tarea.empleadosAsignados.some(function(e){ return e && e._id.toString() === usuario.empleadoId.toString(); }))
+  - );
+  - var puedeEliminar = usuario && usuario.access_role === 'jefe_proyecto';
 
-block contenido
-  //- Cabecera de página
-  .d-flex.justify-content-between.align-items-center.mb-3
-    h1 Lista de Tareas
-    a.btn.btn-success(href="/tareas/crear") + Crear Tarea
+  if puedeEditar || puedeEliminar
+    .btn-group(role="group")
+      //- EDITAR
+      if puedeEditar
+        a.btn.btn-sm.btn-outline-warning(href=`/tareas/editar/${tarea._id}`) Editar
 
-  .card.shadow-sm
-    .card-body
-      if tareas && tareas.length > 0
-        .table-responsive
-          table.table.table-striped.table-hover.align-middle
-            thead.table-light
-              tr
-                th Nombre
-                th Proyecto
-                th Estado
-                th Horas Estim.
-                th Horas Reg.
-                th Empleados
-                th.text-end Acciones
-            tbody
-              each tarea in tareas
-                tr
-                  td= tarea.nombre
-                  td= tarea.proyectoId ? tarea.proyectoId.nombre : 'No asignado'
-                  td
-                    //- Badges para el estado
-                    if tarea.estado === 'En progreso'
-                      span.badge.bg-primary= tarea.estado
-                    else if tarea.estado === 'Pendiente'
-                      span.badge.bg-warning.text-dark= tarea.estado
-                    else if tarea.estado === 'Finalizado'
-                      span.badge.bg-success= tarea.estado
-                    else
-                      span.badge.bg-secondary= tarea.estado
-                  td= tarea.horasEstimadas
-                  td= tarea.horasRegistradas
-                  td
-                    if tarea.empleadosAsignados && tarea.empleadosAsignados.length > 0
-                      small= tarea.empleadosAsignados.map(e => `${e.nombre} (${e.rol})`).join(', ')
-                    else
-                      small.text-muted No asignado
-                  
-                  td.text-end
-                    //- Agrupar botones
-                    if tarea.estado !== 'Eliminada' && tarea.estado !== 'Finalizado'
-                      .btn-group(role="group")
-                        a.btn.btn-sm.btn-outline-warning(href=`/tareas/editar/${tarea._id}`) Editar
-                        form(action=`/tareas/eliminar/${tarea._id}?_method=DELETE` method="POST" style="display:inline")
-                          button.btn.btn-sm.btn-outline-danger(type="submit", onclick="return confirm('¿Seguro que quieres eliminar esta tarea?')") Eliminar
-                    else
-                      span.text-muted --
-
-      else
-        //- Alerta si no hay tareas
-        .alert.alert-info.mb-0 No hay tareas registradas.
+      //- ELIMINAR
+      if puedeEliminar
+        form(action=`/tareas/eliminar/${tarea._id}?_method=DELETE`, method="POST", style="display:inline")
+          button.btn.btn-sm.btn-outline-danger(type="submit", onclick="return confirm('¿Seguro que quieres eliminar esta tarea?')") Eliminar
+  else
+    span.text-muted --

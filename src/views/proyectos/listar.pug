@@ -4,7 +4,10 @@ block contenido
   //- Cabecera de página
   .d-flex.justify-content-between.align-items-center.mb-3
     h1 Lista de Proyectos
-    a.btn.btn-success(href="/proyectos/crear") + Nuevo Proyecto
+
+    //- Botón "Nuevo Proyecto" visible solo para roles autorizados
+    if user && (user.access_role === 'gerente_admin' || user.access_role === 'jefe_proyecto')
+      a.btn.btn-success(href="/proyectos/crear") + Nuevo Proyecto
 
   //- Envolver la tabla en "card"
   .card.shadow-sm
@@ -39,11 +42,15 @@ block contenido
                         data-id=proyecto._id 
                         type="button"
                       ) Detalles
+
+                      //- EDITAR — solo gerente_admin o jefe_proyecto
+                      if user && (user.access_role === 'gerente_admin' || user.access_role === 'jefe_proyecto')
+                        a.btn.btn-sm.btn-outline-warning(href=`/proyectos/editar/${proyecto._id}`) Editar
                       
-                      a.btn.btn-sm.btn-outline-warning(href=`/proyectos/editar/${proyecto._id}`) Editar
-                      
-                      form(action=`/proyectos/eliminar/${proyecto._id}?_method=DELETE` method="POST" style="display:inline")
-                        button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('¿Estás seguro que deseas eliminar este proyecto?')") Eliminar
+                      //- ELIMINAR — solo gerente_admin
+                      if user && user.access_role === 'gerente_admin'
+                        form(action=`/proyectos/eliminar/${proyecto._id}?_method=DELETE` method="POST" style="display:inline")
+                          button.btn.btn-sm.btn-outline-danger(type="submit" onclick="return confirm('¿Estás seguro que deseas eliminar este proyecto?')") Eliminar
 
                 //- Fila de detalles oculta
                 tr.detalle(id=`detalle-${proyecto._id}` style="display:none")

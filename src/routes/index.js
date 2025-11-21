@@ -1,15 +1,13 @@
-// Importamos Express para crear las rutas
 const express = require('express');
-const router = express.Router(); 
+const router = express.Router();
 
-// Ruta principal de la aplicación
+// Ruta principal (ya protegida por authMiddleware en app.js)
 router.get('/', (req, res) => {
-  // Mostramos la página de inicio con título de la página y mensaje de bienvenida
   res.render('index', {
     titulo: 'Inicio - Code Solutions',
-    mensaje: 'Bienvenido al sistema de gestión' 
+    mensaje: 'Bienvenido al sistema de gestión'
+    // user ya está disponible gracias a localUser
   });
 });
 
-// Hacemos que estas rutas estén disponibles para el archivo principal
 module.exports = router;

@@ -1,13 +1,12 @@
-//- Listado de empleados
 extends ../layouts/main
 
 block contenido
-  //- Cabecera de página
   .d-flex.justify-content-between.align-items-center.mb-3
     h1 Lista de Empleados
-    a.btn.btn-success(href="/empleados/crear") + Nuevo Empleado
 
-  //- Envolver en "card"
+    if user && user.access_role === 'gerente_admin'
+      a.btn.btn-success(href="/empleados/crear") + Nuevo Empleado
+
   .card.shadow-sm
     .card-body
       if empleados && empleados.length > 0
@@ -25,21 +24,20 @@ block contenido
                 tr
                   td= empleado.nombre
                   td= empleado.email
-                  td= empleado.rol
+                  td= empleado.rol_empleado
                   td= empleado.area
                   td.text-end
-                    //- Agrupar botones
                     .btn-group(role="group")
                       button.expand-btn.btn.btn-sm.btn-outline-info(data-id=empleado._id) Detalles
-                      a.btn.btn-sm.btn-outline-warning(href=`/empleados/editar/${empleado._id}`) Editar
-                      form(action=`/empleados/eliminar/${empleado._id}?_method=DELETE`, method="POST", style="display:inline")
-                        button.btn.btn-sm.btn-outline-danger(type="submit", onclick="return confirm('¿Estás seguro de eliminar este empleado?')") Eliminar
 
-                //- Detalles expandibles
+                      if user && user.access_role === 'gerente_admin'
+                        a.btn.btn-sm.btn-outline-warning(href=`/empleados/editar/${empleado._id}`) Editar
+                        form(action=`/empleados/eliminar/${empleado._id}?_method=DELETE`, method="POST", style="display:inline")
+                          button.btn.btn-sm.btn-outline-danger(type="submit", onclick="return confirm('¿Estás seguro de eliminar este empleado?')") Eliminar
+
                 tr.detalle(id='detalle-' + empleado._id, style="display:none")
                   td.bg-light-subtle(colspan="5")
                     p #[strong Habilidades:] #{empleado.habilidades ? empleado.habilidades.join(', ') : 'N/A'}
                     p #[strong Especialidad:] #{empleado.especialidad || 'N/A'}
       else
-        //- Alerta si no hay empleados
         .alert.alert-info.mb-0 No hay empleados registrados.

@@ -11,8 +11,10 @@ block contenido
         .card-body
           p.card-text Seleccione el reporte que desea generar:
           
-          //- Usar un ListGroup para el menú
           .list-group
             each opcion in opciones
-              //- Efecto hover
-              a.list-group-item.list-group-item-action(href=opcion.url) #{opcion.nombre}
+              if usuario && (usuario.access_role === 'gerente_admin' || usuario.access_role === 'jefe_proyecto' || usuario.access_role === 'contador')
+                a.list-group-item.list-group-item-action(href=opcion.url) #{opcion.nombre}
+              else
+                //- Si no tiene permiso, mostrar opción desactivada
+                span.list-group-item.text-muted #{opcion.nombre} (sin permiso)

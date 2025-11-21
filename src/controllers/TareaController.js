@@ -9,13 +9,11 @@ module.exports = {
   // Listar todas las tareas
   listar: async (req, res) => {
     try {
-      // Obtener tareas con referencias a empleados y proyecto
       const tareas = await Tarea.find()
         .populate('empleadosAsignados', 'nombre rol')
         .populate('proyectoId', 'nombre')
         .lean();
 
-      // Ordenar: primero Pendiente/En progreso, al final Finalizado/Eliminada
       const prioridad = { 'Pendiente': 1, 'En progreso': 2, 'Finalizado': 3, 'Eliminada': 3 };
       tareas.sort((a, b) => {
         if ((prioridad[a.estado] || 99) === (prioridad[b.estado] || 99)) {
@@ -24,7 +22,6 @@ module.exports = {
         return (prioridad[a.estado] || 99) - (prioridad[b.estado] || 99);
       });
 
-      // Obtener empleados y proyectos para los select del formulario
       const empleados = await Empleado.find().lean();
       const proyectos = await Proyecto.find().lean();
 
@@ -71,13 +68,10 @@ module.exports = {
   crear: async (req, res) => {
     try {
       const { proyectoId, nombre, horasEstimadas, horasRegistradas, estado, empleadosAsignados } = req.body;
-
-      // Asegurarse de que empleadosAsignados sea un array
       const empleadosArray = empleadosAsignados
         ? Array.isArray(empleadosAsignados) ? empleadosAsignados : [empleadosAsignados]
         : [];
 
-      // Crear nueva tarea en Mongo
       const nuevaTarea = new Tarea({
         proyectoId,
         nombre,
@@ -100,8 +94,20 @@ module.exports = {
   // Actualizar tarea
   actualizar: async (req, res) => {
     try {
-      const { nombre, proyectoId, horasEstimadas, horasRegistradas, estado, empleadosAsignados } = req.body;
+      const tarea = await Tarea.findById(req.params.id);
+      if (!tarea) return res.status(404).render('error', { mensajeError: 'Tarea no encontrada' });
 
+      // Validación de permisos “solo propias” para desarrollador
+      if (req.usuario.rol === 'desarrollador') {
+        const esAsignado = tarea.empleadosAsignados.some(
+          idEmpleado => idEmpleado.toString() === req.usuario.empleadoId
+        );
+        if (!esAsignado) {
+          return res.status(403).render('error', { mensajeError: 'No tienes permisos para editar esta tarea' });
+        }
+      }
+
+      const { nombre, proyectoId, horasEstimadas, horasRegistradas, estado, empleadosAsignados } = req.body;
       const empleadosArray = empleadosAsignados
         ? Array.isArray(empleadosAsignados) ? empleadosAsignados : [empleadosAsignados]
         : [];
@@ -127,6 +133,19 @@ module.exports = {
   // Cambiar estado de la tarea
   cambiarEstado: async (req, res) => {
     try {
+      const tarea = await Tarea.findById(req.params.id);
+      if (!tarea) return res.status(404).render('error', { mensajeError: 'Tarea no encontrada' });
+
+      // Validación de permisos “solo propias” para desarrollador
+      if (req.usuario.rol === 'desarrollador') {
+        const esAsignado = tarea.empleadosAsignados.some(
+          idEmpleado => idEmpleado.toString() === req.usuario.empleadoId
+        );
+        if (!esAsignado) {
+          return res.status(403).render('error', { mensajeError: 'No tienes permisos para cambiar el estado de esta tarea' });
+        }
+      }
+
       await Tarea.findByIdAndUpdate(req.params.id, { estado: req.body.estado });
       res.redirect('/tareas');
     } catch (error) {

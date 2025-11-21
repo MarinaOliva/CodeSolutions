@@ -1,0 +1,27 @@
+extends ../layouts/main
+
+block contenido
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-6
+        .card.shadow
+          .card-body
+            h3.text-center.mb-4 Registrarse
+
+            if error
+              .alert.alert-danger.text-center= error
+
+            form(action="/auth/registro" method="POST")
+
+              .mb-3
+                label.form-label(for="email") Email institucional
+                input.form-control(type="email" name="email" id="email" required)
+
+              .mb-3
+                label.form-label(for="password") Contraseña
+                input.form-control(type="password" name="password" id="password" required)
+
+              p.text-muted.mt-2
+                | *Su rol en el sistema se asignará automáticamente según su perfil en Recursos Humanos.*
+
+              button.btn.btn-success.w-100(type="submit") Crear cuenta
