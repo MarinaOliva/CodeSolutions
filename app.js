@@ -48,7 +48,7 @@ app.use(localUser);
 
 // Motor de vistas
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', path.join(__dirname, 'src', 'views')); 
 
 
 // AuthMiddleware
@@ -58,13 +58,13 @@ const authMiddleware = require('./src/middlewares/auth');
 // Rutas
 // ======================
 
-const rutasPrincipales = require('./src/routes/index');
-const rutasAuth = require('./src/routes/authRoutes');
-const rutasProyectos = require('./src/routes/proyectoRoutes');
-const rutasEmpleados = require('./src/routes/empleadoRoutes');
-const rutasTareas = require('./src/routes/tareaRoutes');
-const rutasReportes = require('./src/routes/reporteRoutes');
-const rutasProfile = require('./src/routes/profileRoutes');
+const rutasPrincipales = require(path.join(__dirname, 'src', 'routes', 'index'));
+const rutasAuth = require(path.join(__dirname, 'src', 'routes', 'authRoutes'));
+const rutasProyectos = require(path.join(__dirname, 'src', 'routes', 'proyectoRoutes'));
+const rutasEmpleados = require(path.join(__dirname, 'src', 'routes', 'empleadoRoutes'));
+const rutasTareas = require(path.join(__dirname, 'src', 'routes', 'tareaRoutes'));
+const rutasReportes = require(path.join(__dirname, 'src', 'routes', 'reporteRoutes'));
+const rutasProfile = require(path.join(__dirname, 'src', 'routes', 'profileRoutes'));
 
 // --- RUTAS PÚBLICAS (sin protección) ---
 app.use('/auth', rutasAuth); 
@@ -79,11 +79,9 @@ app.use('/empleados', rutasEmpleados);
 app.use('/tareas', rutasTareas);
 app.use('/reportes', rutasReportes);
 
-
 // ======================
 // Manejo de errores
 // ======================
-
 app.use((req, res) => {
   res.status(404).render('error', {
     titulo: 'Página no encontrada',
@@ -102,7 +100,6 @@ app.use((err, req, res, next) => {
 // ======================
 // Inicio del servidor
 // ======================
-
 const PUERTO = process.env.PORT || 3000;
 
 app.listen(PUERTO, '0.0.0.0', () => {
