@@ -41,7 +41,7 @@ const registro = require('./src/middlewares/registro');
 app.use(registro);
 
 // ======================
-// Middlewares de vistas
+// Middlewares de vistas 
 // ======================
 const localUser = require('./src/middlewares/localUser');
 app.use(localUser);
