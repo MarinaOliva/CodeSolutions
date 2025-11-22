@@ -12,16 +12,33 @@ block contenido
               .alert.alert-danger.text-center= error
 
             form(action="/auth/registro" method="POST")
-
+              
               .mb-3
                 label.form-label(for="email") Email institucional
                 input.form-control(type="email" name="email" id="email" required)
 
               .mb-3
                 label.form-label(for="password") Contraseña
-                input.form-control(type="password" name="password" id="password" required)
+                input.form-control#password(type="password" name="password" required)
+
+                //- REQUISITOS DE CONTRASEÑA
+                ul.list-unstyled.mt-2#password-requisitos
+                  li.text-muted#req-length Debe tener al menos 8 caracteres
+                  li.text-muted#req-mayus Debe incluir una letra mayúscula
+                  li.text-muted#req-minus Debe incluir una letra minúscula
+                  li.text-muted#req-num Debe incluir un número
+                  li.text-muted#req-special Debe incluir un carácter especial (!@#$%^&*)
+
+              .mb-3
+                label.form-label(for="confirm_password") Confirmar contraseña
+                input.form-control#confirm_password(type="password" name="confirmPassword" required)
+                small.text-danger#match-error(style="display:none") Las contraseñas no coinciden.
 
               p.text-muted.mt-2
                 | *Su rol en el sistema se asignará automáticamente según su perfil en Recursos Humanos.*
 
               button.btn.btn-success.w-100(type="submit") Crear cuenta
+
+//- validación en vivo de los requisitos
+block scripts
+  script(src="/js/passwordValidation.js")

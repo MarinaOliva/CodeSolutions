@@ -1,3 +1,5 @@
+// controllers/AuthController.js
+
 const Usuario = require("../models/Usuario");
 const Empleado = require("../models/Empleado");
 const bcrypt = require("bcryptjs");
@@ -16,22 +18,22 @@ const authController = {
         return res.status(400).render("auth/register", { error: "Faltan datos requeridos" });
       }
 
-      //Verificar que el empleado existe
+      // Verificar que el empleado existe
       const empleado = await Empleado.findOne({ email });
       if (!empleado) {
         return res.status(403).render("auth/register", { error: "Su email no está autorizado. Contacte al administrador." });
       }
 
-      //Verificar que no exista ya un usuario
+      // Verificar que no exista ya un usuario
       const usuarioExistente = await Usuario.findOne({ email });
       if (usuarioExistente) {
         return res.status(400).render("auth/register", { error: "Ya se ha registrado previamente" });
       }
 
-      //Crear usuario
-       const nuevoUsuario = new Usuario({
+      // Crear usuario (hash se hace en el modelo)
+      const nuevoUsuario = new Usuario({
         email,
-        password_hash: password,
+        password_hash: password,     
         empleado_id: empleado._id,
         access_role: empleado.access_role
       });
@@ -42,7 +44,7 @@ const authController = {
 
     } catch (error) {
       console.error("Error en registro:", error);
-      res.status(500).render("auth/regist", { error: "Error interno del servidor" });
+      res.status(500).render("auth/register", { error: "Error interno del servidor" });
     }
   },
 
@@ -95,7 +97,7 @@ const authController = {
     res.redirect("/auth/login");
   },
 
-  // VALIDAR TOKEN (para middleware)
+  // VALIDAR TOKEN
   verificarToken: (req, res, next) => {
     const token = req.cookies.token;
     if (!token) return res.redirect("/auth/login");
