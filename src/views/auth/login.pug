@@ -8,6 +8,11 @@ block contenido
           .card-body
             h3.text-center.mb-4 Iniciar sesión
 
+            //- Mostrar mensaje de éxito si existe
+            if mensaje
+              .alert.alert-success.text-center= mensaje
+
+            //- Mostrar mensaje de error si existe
             if error
               .alert.alert-danger.text-center= error
 
@@ -22,6 +27,6 @@ block contenido
 
               button.btn.btn-primary.w-100(type="submit") Ingresar
 
-            // Enlace al registro
+            //- Enlace al registro
             .text-center.mt-3
               a(href="/auth/registro") ¿No tiene cuenta? Registrar una cuenta

@@ -19,14 +19,14 @@ block contenido
                 | No hay información de usuario. Inicie sesión nuevamente.
             else
 
-              // Datos del usuario
+              //- Datos del usuario
               ul.list-group.mb-4
                 li.list-group-item
                   strong Email:
                   |  #{usuario.email}
 
                 li.list-group-item
-                  strong Rol:
+                  strong Cargo:
                   |  #{usuario.rol}
 
                 if usuario.nombre
@@ -34,7 +34,7 @@ block contenido
                     strong Nombre:
                     |  #{usuario.nombre}
 
-              // FORM CAMBIAR CONTRASEÑA
+              //- FORM CAMBIAR CONTRASEÑA
               h4.mt-4 Cambiar contraseña
 
               form(method="POST", action="/auth/profile/change-password?_method=PUT")

@@ -2,6 +2,7 @@
 const Empleado = require('../models/Empleado');
 const Proyecto = require('../models/Proyecto');
 const Tarea = require('../models/Tarea');
+const Usuario = require('../models/Usuario'); 
 
 // Listado de roles y áreas válidas
 const ROLES_VALIDOS = ['administrador', 'desarrollador', 'QA', 'DevOps', 'soporte', 'contador'];
@@ -93,7 +94,6 @@ module.exports = {
         const empleadoId = req.params.id;
 
         try {
-
             const empleado = await Empleado.findById(empleadoId).lean();
 
             if (!empleado) {
@@ -173,29 +173,31 @@ module.exports = {
         }
     },
 
-    // Eliminar un empleado de la empresa y desasignarlo de proyectos y tareas
+    // Eliminar un empleado y su usuario asociado
     eliminar: async (req, res) => {
 
         const empleadoId = req.params.id;
 
         try {
+            await Usuario.deleteOne({ empleado_id: empleadoId });
 
-            // Eliminar de la colección de empleados
             await Empleado.findByIdAndDelete(empleadoId);
-
-            // Quitar de proyectos donde esté asignado
+            
             await Proyecto.updateMany(
                 { empleadosAsignados: empleadoId },
                 { $pull: { empleadosAsignados: empleadoId } }
             );
 
-            // Quitar de tareas donde esté asignado
             await Tarea.updateMany(
                 { empleadosAsignados: empleadoId },
                 { $pull: { empleadosAsignados: empleadoId } }
             );
 
-            res.redirect('/empleados');
+            const empleados = await Empleado.find().lean();
+            res.render('empleados/listar', { 
+                empleados, 
+                mensaje: 'Empleado y usuario eliminados correctamente.' 
+            });
 
         } catch (error) {
             console.error(error);
@@ -213,14 +215,11 @@ module.exports = {
         const { empleadoId, proyectoId } = req.params;
 
         try {
-
-            // Quitar del proyecto
             await Proyecto.findByIdAndUpdate(
                 proyectoId,
                 { $pull: { empleadosAsignados: empleadoId } }
             );
 
-            // Quitar de tareas del proyecto
             await Tarea.updateMany(
                 { proyectoId, empleadosAsignados: empleadoId },
                 { $pull: { empleadosAsignados: empleadoId } }

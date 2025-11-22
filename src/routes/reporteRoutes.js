@@ -11,9 +11,6 @@ router.get('/', (req, res) => {
     { nombre: 'Historial', url: '/reportes/historial' }
   ];
 
-  // Este console.log sirve para ver si la ruta se ejecuta
-  console.log('Renderizando menú con opciones:', opciones);
-
   res.render('reportes/menu', { titulo: 'Reportes', opciones });
 });
 

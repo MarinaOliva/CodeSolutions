@@ -4,11 +4,14 @@ block contenido
   .d-flex.justify-content-between.align-items-center.mb-3
     h1 Lista de Empleados
 
-    if user && user.access_role === 'gerente_admin'
+    if usuario && usuario.rol === 'gerente_admin'
       a.btn.btn-success(href="/empleados/crear") + Nuevo Empleado
 
   .card.shadow-sm
     .card-body
+      if mensaje
+       .alert.alert-success(role="alert")= mensaje
+       
       if empleados && empleados.length > 0
         .table-responsive
           table.table.table-hover.table-striped.align-middle
@@ -30,7 +33,7 @@ block contenido
                     .btn-group(role="group")
                       button.expand-btn.btn.btn-sm.btn-outline-info(data-id=empleado._id) Detalles
 
-                      if user && user.access_role === 'gerente_admin'
+                      if usuario && usuario.rol  === 'gerente_admin'
                         a.btn.btn-sm.btn-outline-warning(href=`/empleados/editar/${empleado._id}`) Editar
                         form(action=`/empleados/eliminar/${empleado._id}?_method=DELETE`, method="POST", style="display:inline")
                           button.btn.btn-sm.btn-outline-danger(type="submit", onclick="return confirm('¿Estás seguro de eliminar este empleado?')") Eliminar

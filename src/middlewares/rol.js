@@ -1,11 +1,19 @@
-const roleMiddleware = (rolesPermitidos) => {
+const roleMiddleware = (...rolesPermitidos) => {
+  
   return (req, res, next) => {
-    if (!req.usuario) {
+    const usuario = res.locals.usuario;
+  
+    if (!usuario) {
       return res.status(401).redirect("/auth/login");
     }
 
-    if (!rolesPermitidos.includes(req.usuario.rol)) {
-      return res.status(403).render("403", { error: "No tienes permisos para acceder a esta página" });
+    const rolUsuario = usuario.rol;
+
+    if (!rolesPermitidos.includes(rolUsuario)) {
+      console.log(
+        `Acceso denegado. Rol actual: ${rolUsuario}. Requiere uno de: ${rolesPermitidos.join(", ")}`
+      );
+      return res.redirect("/"); 
     }
 
     next();

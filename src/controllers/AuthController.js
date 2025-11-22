@@ -29,10 +29,9 @@ const authController = {
       }
 
       //Crear usuario
-      const password_hash = await bcrypt.hash(password, 10);
-      const nuevoUsuario = new Usuario({
+       const nuevoUsuario = new Usuario({
         email,
-        password_hash,
+        password_hash: password,
         empleado_id: empleado._id,
         access_role: empleado.access_role
       });
@@ -54,12 +53,12 @@ const authController = {
     try {
       const usuario = await Usuario.findOne({ email }).populate("empleado_id");
       if (!usuario || !usuario.estaActivo) {
-        return res.status(401).render("auth/login", { error: "Email o contraseña inválidos" });
+        return res.status(401).render("auth/login", { error: "Email inválido" });
       }
 
       const passwordValido = await usuario.compararPassword(password);
       if (!passwordValido) {
-        return res.status(401).render("auth/login", { error: "Email o contraseña inválidos" });
+        return res.status(401).render("auth/login", { error: "Contraseña inválida" });
       }
 
       // Generar token JWT
@@ -68,7 +67,8 @@ const authController = {
           id: usuario._id,
           nombre: usuario.empleado_id.nombre,
           email: usuario.email,
-          rol: usuario.access_role
+          rol: usuario.access_role,
+          empleadoId: usuario.empleado_id._id
         },
         JWT_SECRET,
         { expiresIn: "2h" }
@@ -110,17 +110,6 @@ const authController = {
       return res.redirect("/auth/login");
     }
   },
-
-  // AUTORIZACIÓN POR ROLE (para middleware)
-  verificarRole: (rolesPermitidos) => {
-    return (req, res, next) => {
-      if (!rolesPermitidos.includes(req.usuario.rol)) {
-        return res.status(403).render("403", { error: "No tiene permisos para acceder a esta página" });
-      }
-      next();
-    };
-  }
-
 };
 
 module.exports = { authController };

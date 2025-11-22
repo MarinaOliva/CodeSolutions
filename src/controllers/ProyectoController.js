@@ -17,15 +17,12 @@ module.exports = {
       const tareas = await Tarea.find().lean();
 
       const proyectosConNombres = proyectos.map(proyecto => {
-        // IDs de empleados asignados manualmente
         const idsManual = proyecto.empleadosAsignados?.map(e => e.toString()) || [];
-        // IDs de empleados de tareas de este proyecto
         const idsDeTareas = tareas
           .filter(t => t.proyectoId?.toString() === proyecto._id.toString())
           .flatMap(t => t.empleadosAsignados?.map(e => e.toString()) || []);
         // Unir y eliminar duplicados
         const idsUnidos = [...new Set([...idsManual, ...idsDeTareas])];
-        // Obtener objetos de empleados
         const empleadosAsignados = empleados
           .filter(e => idsUnidos.includes(e._id.toString()))
           .map(e => ({ nombre: e.nombre, rol: e.rol, id: e._id }));
@@ -147,10 +144,8 @@ module.exports = {
         .flatMap(t => t.empleadosAsignados?.map(e => e.toString()) || []);
       const idsViejosUnidos = [...new Set([...idsManual, ...idsDeTareas])];
 
-      // Empleados a quitar 
       const idsParaQuitar = idsViejosUnidos.filter(id => !idsNuevos.includes(id));
 
-      // Empleados a agregar
       const idsParaAgregar = idsNuevos.filter(id => !idsManual.includes(id));
 
 
@@ -212,9 +207,9 @@ module.exports = {
   // Eliminar un proyecto (baja lógica) 
   eliminar: async (req, res) => {
     try {
-      const idProyecto = req.params.id; // Obtenemos el ID
+      const idProyecto = req.params.id; 
 
-      // 1. Marcar el proyecto como Cancelado
+      // Marcar el proyecto como Cancelado
       await Proyecto.findByIdAndUpdate(idProyecto, { estado: 'Cancelado' });
 
       // Actualización de tareas acorde al estado del proyecto

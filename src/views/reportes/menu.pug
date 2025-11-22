@@ -13,7 +13,7 @@ block contenido
           
           .list-group
             each opcion in opciones
-              if usuario && (usuario.access_role === 'gerente_admin' || usuario.access_role === 'jefe_proyecto' || usuario.access_role === 'contador')
+              if usuario && (usuario.rol === 'gerente_admin' || usuario.rol === 'jefe_proyecto' || usuario.rol === 'contador')
                 a.list-group-item.list-group-item-action(href=opcion.url) #{opcion.nombre}
               else
                 //- Si no tiene permiso, mostrar opción desactivada

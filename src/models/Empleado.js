@@ -1,4 +1,3 @@
-// src/models/Empleado.js
 const mongoose = require('mongoose');
 
 // Listas de valores válidos

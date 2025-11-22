@@ -5,18 +5,14 @@ const localUser = require("../middlewares/localUser");
 
 const router = express.Router();
 
-// -----------------------------------
 // RUTAS PÚBLICAS
-// -----------------------------------
 router.get("/login", (req, res) => res.render("auth/login"));
 router.post("/login", authController.login);
 
 router.get("/registro", (req, res) => res.render("auth/register"));
 router.post("/registro", authController.registrar);
 
-// -----------------------------------
 // RUTAS PRIVADAS 
-// -----------------------------------
 router.use(authMiddleware, localUser);
 
 // Perfil del usuario

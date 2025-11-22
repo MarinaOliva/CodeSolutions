@@ -24,7 +24,7 @@ module.exports = {
 
       const empleados = await Empleado.find().lean();
       const proyectos = await Proyecto.find().lean();
-
+     
       res.render('tareas/listar', { tareas, empleados, proyectos, estadosValidos });
     } catch (error) {
       console.error('Error listando tareas:', error);

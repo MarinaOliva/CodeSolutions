@@ -1,20 +1,76 @@
-td.text-end
-  - var puedeEditar = usuario && (
-  -   usuario.access_role === 'jefe_proyecto' ||
-  -   usuario.access_role === 'soporte' ||
-  -   (usuario.access_role === 'desarrollador' && tarea.empleadosAsignados && tarea.empleadosAsignados.some(function(e){ return e && e._id.toString() === usuario.empleadoId.toString(); }))
-  - );
-  - var puedeEliminar = usuario && usuario.access_role === 'jefe_proyecto';
+extends ../layouts/main
 
-  if puedeEditar || puedeEliminar
-    .btn-group(role="group")
-      //- EDITAR
-      if puedeEditar
-        a.btn.btn-sm.btn-outline-warning(href=`/tareas/editar/${tarea._id}`) Editar
+block contenido
+  //- Cabecera de página
+  .d-flex.justify-content-between.align-items-center.mb-3
+    h1 Lista de Tareas
+    //- Botón Crear visible solo para roles permitidos
+    - if (usuario && (usuario.rol === 'gerente_admin' || usuario.rol === 'jefe_proyecto' || usuario.rol === 'soporte'))
+      a.btn.btn-success(href="/tareas/crear") + Crear Tarea
 
-      //- ELIMINAR
-      if puedeEliminar
-        form(action=`/tareas/eliminar/${tarea._id}?_method=DELETE`, method="POST", style="display:inline")
-          button.btn.btn-sm.btn-outline-danger(type="submit", onclick="return confirm('¿Seguro que quieres eliminar esta tarea?')") Eliminar
-  else
-    span.text-muted --
+  .card.shadow-sm
+    .card-body
+      if tareas && tareas.length > 0
+        .table-responsive
+          table.table.table-striped.table-hover.align-middle
+            thead.table-light
+              tr
+                th Nombre
+                th Proyecto
+                th Estado
+                th Horas Estim.
+                th Horas Reg.
+                th Empleados
+                th.text-end Acciones
+            tbody
+              each tarea in tareas
+                tr
+                  td= tarea.nombre
+                  td= tarea.proyectoId ? tarea.proyectoId.nombre : 'No asignado'
+                  td
+                    //- Badges para el estado
+                    if tarea.estado === 'En progreso'
+                      span.badge.bg-primary= tarea.estado
+                    else if tarea.estado === 'Pendiente'
+                      span.badge.bg-warning.text-dark= tarea.estado
+                    else if tarea.estado === 'Finalizado'
+                      span.badge.bg-success= tarea.estado
+                    else
+                      span.badge.bg-secondary= tarea.estado
+                  td= tarea.horasEstimadas
+                  td= tarea.horasRegistradas
+                  td
+                    if tarea.empleadosAsignados && tarea.empleadosAsignados.length > 0
+                      small= tarea.empleadosAsignados.map(e => `${e.nombre} (${e.rol})`).join(', ')
+                    else
+                      small.text-muted No asignado
+                  
+                  td.text-end
+                    //- Lógica de permisos para botones
+                    - var puedeEditar = false
+                    - var puedeEliminar = false
+
+                    - if (usuario)
+                      - if (usuario.rol === 'gerente_admin' || usuario.rol === 'jefe_proyecto')
+                        - puedeEditar = true
+                        - puedeEliminar = true
+                      - else if (usuario.rol === 'soporte')
+                        - puedeEditar = true
+                      - else if (usuario.rol === 'desarrollador')
+                        - if (tarea.empleadosAsignados && tarea.empleadosAsignados.some(e => e && e._id.toString() === (usuario.empleadoId ? usuario.empleadoId.toString() : '')))
+                          - puedeEditar = true
+
+                    //- Mostrar botones solo si la tarea no está eliminada ni finalizada
+                    - if (tarea.estado !== 'Eliminada' && tarea.estado !== 'Finalizado' && (puedeEditar || puedeEliminar))
+                      .btn-group(role="group")
+                        - if (puedeEditar)
+                          a.btn.btn-sm.btn-outline-warning(href=`/tareas/editar/${tarea._id}`) Editar
+                        - if (puedeEliminar)
+                          form(action=`/tareas/eliminar/${tarea._id}?_method=DELETE`, method="POST", style="display:inline")
+                            button.btn.btn-sm.btn-outline-danger(type="submit", onclick="return confirm('¿Seguro que quieres eliminar esta tarea?')") Eliminar
+                    - else if (tarea.estado === 'Eliminada' || tarea.estado === 'Finalizado')
+                      span.text-muted --
+
+      else
+        //- Alerta si no hay tareas
+        .alert.alert-info.mb-0 No hay tareas registradas.
