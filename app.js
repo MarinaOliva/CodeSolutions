@@ -102,8 +102,8 @@ app.use((err, req, res, next) => {
 // Inicio del servidor
 // ======================
 
-const PUERTO = process.env.PUERTO || 3000;
+const PUERTO = process.env.PORT || 3000;
 
-app.listen(PUERTO, () => {
+app.listen(PUERTO, '0.0.0.0', () => {
   console.log(`\nServidor corriendo en: http://localhost:${PUERTO}`);
 });
