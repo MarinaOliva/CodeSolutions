@@ -48,7 +48,8 @@ app.use(localUser);
 
 // Motor de vistas
 app.set('view engine', 'pug');
-app.set('views', path.join(__dirname, 'src/views'));
+app.set('views', path.join(__dirname, 'views'));
+
 
 // AuthMiddleware
 const authMiddleware = require('./src/middlewares/auth');
