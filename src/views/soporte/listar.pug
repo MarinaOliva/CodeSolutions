@@ -1,6 +1,7 @@
 extends ../layouts/main
 
 block contenido
+  //- Script para manejar alertas por URL
   if notificacion && notificacion.trim() !== ""
     script.
       alert("#{notificacion}");
@@ -8,10 +9,15 @@ block contenido
       url.searchParams.delete('notificacion');
       window.history.replaceState({}, document.title, url);
 
+  
   .d-flex.justify-content-between.align-items-center.mb-3
     h1 Tickets de Soporte
-    a.btn.btn-primary(href='/soporte/crear') Nuevo Ticket
+    
+    //- Crear nuevo ticket (solo roles con permiso)
+    if usuario && ['soporte', 'gerente_admin'].includes(usuario.rol)
+      a.btn.btn-primary(href='/soporte/crear') Nuevo Ticket
 
+  
   .card.shadow-sm
     .card-body
       if tickets && tickets.length > 0
@@ -37,28 +43,34 @@ block contenido
                     else
                       span.badge.bg-secondary= ticket.estado
                   td= ticket.tipo
+                  
                   td.text-end
-                    .btn-group(role="group")
-                      button.expand-btn.btn.btn-sm.btn-outline-info(data-id=ticket._id) Detalles
-                      a.btn.btn-sm.btn-outline-warning(href=`/soporte/${ticket._id}/editar`) Editar
-                      form(action=`/soporte/${ticket._id}/borrar`, method="POST", style="display:inline")
-                      button.btn.btn-sm.btn-danger(
-                        type="submit",
-                        onclick="return confirm('¿Está seguro de que deseas borrar este ticket?')"
-                      ) Borrar
+                    button.expand-btn.btn.btn-sm.btn-outline-info.me-1(type="button", data-id=ticket._id) Detalles
+                    
+                    //- Editar/borrar (Solo roles con permiso)
+                    if usuario && ['soporte', 'gerente_admin', 'jefe_proyecto'].includes(usuario.rol)
+                      .btn-group(role="group")
+                        a.btn.btn-sm.btn-outline-warning(href=`/soporte/${ticket._id}/editar`) Editar
+                        
+                        form(action=`/soporte/${ticket._id}/borrar`, method="POST", style="display:inline")
+                          button.btn.btn-sm.btn-danger(
+                            type="submit",
+                            onclick="return confirm('¿Está seguro de que desea borrar este ticket?')"
+                          ) Borrar
 
                 tr.detalle(id='detalle-' + ticket._id, style="display:none")
                   td.bg-light-subtle(colspan="4")
-                    p #[strong Descripción:] #{ticket.descripcion || '-'}
-                    p #[strong Cliente:] #{ticket.cliente || '-'}
-                    p #[strong Fecha de creación:] #{ticket.fechaCreacion ? new Date(ticket.fechaCreacion).toLocaleDateString() : '-'}
-                    p #[strong Fecha de cierre:] #{ticket.fechaCierre ? new Date(ticket.fechaCierre).toLocaleDateString() : '-'}
-                    p #[strong Responsable actual:] 
-                      if ticket.responsableActual && ticket.responsableActual.empleado_id
-                        - const emp = ticket.responsableActual.empleado_id;
-                        = `${emp.nombre} (${ticket.responsableActual.access_role})`
-                      else
-                        | -
-                    p #[strong Proyecto:] #{ticket.proyectoRelacionado ? ticket.proyectoRelacionado.nombre : '-'}
+                    div.p-3
+                      p.mb-1 #[strong Descripción:] #{ticket.descripcion || '-'}
+                      p.mb-1 #[strong Cliente:] #{ticket.cliente || '-'}
+                      p.mb-1 #[strong Fecha de creación:] #{ticket.fechaCreacion ? new Date(ticket.fechaCreacion).toLocaleDateString() : '-'}
+                      p.mb-1 #[strong Fecha de cierre:] #{ticket.fechaCierre ? new Date(ticket.fechaCierre).toLocaleDateString() : '-'}
+                      p.mb-1 #[strong Responsable actual:] 
+                        if ticket.responsableActual && ticket.responsableActual.empleado_id
+                          - const emp = ticket.responsableActual.empleado_id;
+                          = `${emp.nombre} (${ticket.responsableActual.access_role})`
+                        else
+                          | -
+                      p.mb-0 #[strong Proyecto:] #{ticket.proyectoRelacionado ? ticket.proyectoRelacionado.nombre : '-'}
       else
         .alert.alert-info.mb-0 No hay tickets registrados.
