@@ -13,17 +13,17 @@ const localUser = require('../middlewares/localUser');
 router.get('/', authMiddleware, localUser, TareaController.listar);
 
 // Crear tarea - jefe_proyecto, soporte, gerente_admin
-router.get('/crear', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto', 'soporte'), TareaController.mostrarFormularioCrear);
-router.post('/crear', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto', 'soporte'), TareaController.crear);
+router.get('/crear', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto'), TareaController.mostrarFormularioCrear);
+router.post('/crear', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto'), TareaController.crear);
 
 // Editar tarea - jefe_proyecto, soporte, desarrollador (solo propias), gerente_admin
-router.get('/editar/:id', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto', 'soporte', 'desarrollador'), TareaController.mostrarFormularioEditar);
-router.put('/editar/:id', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto', 'soporte', 'desarrollador'), TareaController.actualizar);
+router.get('/editar/:id', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto', 'desarrollador'), TareaController.mostrarFormularioEditar);
+router.put('/editar/:id', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto', 'desarrollador'), TareaController.actualizar);
 
 // Eliminar tarea - jefe_proyecto, gerente_admin
 router.delete('/eliminar/:id', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto'), TareaController.eliminar);
 
 // Cambiar estado tarea - jefe_proyecto, soporte, desarrollador, gerente_admin
-router.put('/estado/:id', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto', 'soporte', 'desarrollador'), TareaController.cambiarEstado);
+router.put('/estado/:id', authMiddleware, localUser, permit('gerente_admin', 'jefe_proyecto','desarrollador'), TareaController.cambiarEstado);
 
 module.exports = router;
