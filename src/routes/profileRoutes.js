@@ -1,5 +1,6 @@
 const express = require("express");
 const authMiddleware = require("../middlewares/auth");
+const validarPassword = require("../middlewares/validarPassword");
 const { changePassword } = require("../controllers/UserController");
 
 const router = express.Router();
@@ -10,6 +11,11 @@ router.get("/profile", authMiddleware, (req, res) => {
 });
 
 // Cambiar contraseña
-router.put("/profile/change-password", authMiddleware, changePassword);
+router.put(
+  "/profile/change-password",
+  authMiddleware,
+  validarPassword,   
+  changePassword
+);
 
 module.exports = router;

@@ -3,7 +3,7 @@ const User = require("../models/Usuario");
 
 exports.changePassword = async (req, res) => {
   try {
-    const { actual, nueva } = req.body;
+    const { actual, password } = req.body; 
     const userId = req.usuario.id;
 
     const usuario = await User.findById(userId);
@@ -14,6 +14,7 @@ exports.changePassword = async (req, res) => {
       });
     }
 
+    // Validar contraseña actual
     const esCorrecta = await bcrypt.compare(actual, usuario.password_hash);
     if (!esCorrecta) {
       return res.status(400).render("auth/profile", {
@@ -22,7 +23,8 @@ exports.changePassword = async (req, res) => {
       });
     }
 
-    usuario.password_hash = nueva;
+    // Guardar nueva contraseña (ya validada por el middleware)
+    usuario.password_hash = password;
     await usuario.save();
 
     return res.render("auth/profile", {
