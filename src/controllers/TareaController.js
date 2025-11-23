@@ -1,6 +1,7 @@
 const Tarea = require('../models/Tarea');
 const Empleado = require('../models/Empleado');
 const Proyecto = require('../models/Proyecto');
+const Ticket = require('../models/Ticket');
 
 // Lista de estados válidos para tareas
 const estadosValidos = ['Pendiente', 'En progreso', 'Finalizado', 'Eliminada'];
@@ -94,6 +95,7 @@ module.exports = {
   // Actualizar tarea
   actualizar: async (req, res) => {
     try {
+      // Buscar la tarea original primero
       const tarea = await Tarea.findById(req.params.id);
       if (!tarea) return res.status(404).render('error', { mensajeError: 'Tarea no encontrada' });
 
@@ -111,6 +113,17 @@ module.exports = {
       const empleadosArray = empleadosAsignados
         ? Array.isArray(empleadosAsignados) ? empleadosAsignados : [empleadosAsignados]
         : [];
+
+      // === CIERRE DE TICKET ===
+      // Si el nuevo estado es Finalizado y la tarea viene de un ticket
+      if (estado === 'Finalizado' && tarea.ticketOrigen) {
+         await Ticket.findByIdAndUpdate(tarea.ticketOrigen, {
+            estado: 'Solucionado',
+            fechaCierre: new Date()
+         });
+         console.log(`Ticket ${tarea.ticketOrigen} cerrado automáticamente al finalizar la tarea.`);
+      }
+
 
       await Tarea.findByIdAndUpdate(req.params.id, {
         nombre,
@@ -130,7 +143,7 @@ module.exports = {
     }
   },
 
-  // Cambiar estado de la tarea
+ // Cambiar estado de la tarea
   cambiarEstado: async (req, res) => {
     try {
       const tarea = await Tarea.findById(req.params.id);
@@ -146,7 +159,19 @@ module.exports = {
         }
       }
 
-      await Tarea.findByIdAndUpdate(req.params.id, { estado: req.body.estado });
+      const nuevoEstado = req.body.estado;
+
+      // === CIERRE DE TICKET ===
+      if (nuevoEstado === 'Finalizado' && tarea.ticketOrigen) {
+         await Ticket.findByIdAndUpdate(tarea.ticketOrigen, {
+            estado: 'Solucionado',
+            fechaCierre: new Date()
+         });
+         console.log(`Ticket ${tarea.ticketOrigen} cerrado automáticamente por cambio de estado.`);
+      }
+    
+
+      await Tarea.findByIdAndUpdate(req.params.id, { estado: nuevoEstado });
       res.redirect('/tareas');
     } catch (error) {
       console.error('Error cambiando estado de la tarea:', error);

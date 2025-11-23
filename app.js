@@ -63,6 +63,7 @@ const rutasEmpleados = require(path.join(__dirname, 'src', 'routes', 'empleadoRo
 const rutasTareas = require(path.join(__dirname, 'src', 'routes', 'tareaRoutes'));
 const rutasReportes = require(path.join(__dirname, 'src', 'routes', 'reporteRoutes'));
 const rutasProfile = require(path.join(__dirname, 'src', 'routes', 'profileRoutes'));
+const soporteRoutes = require('./src/routes/soporteRoutes');
 
 // --- RUTAS PÚBLICAS (sin protección) ---
 app.use('/auth', rutasAuth); 
@@ -75,6 +76,7 @@ app.use('/proyectos', rutasProyectos);
 app.use('/empleados', rutasEmpleados);
 app.use('/tareas', rutasTareas);
 app.use('/reportes', rutasReportes);
+app.use('/soporte', soporteRoutes);
 
 // ======================
 // Manejo de errores

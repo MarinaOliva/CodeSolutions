@@ -1,0 +1,52 @@
+extends ../layouts/main
+
+block contenido
+  h1 Editar Ticket
+
+  form(action=`/soporte/${ticket._id}/editar`, method="POST")
+    .mb-3
+      label.form-label(for="titulo") Título
+      input.form-control(type="text", id="titulo", name="titulo", value=ticket.titulo || '', required)
+
+    .mb-3
+      label.form-label(for="descripcion") Descripción
+      textarea.form-control(id="descripcion", name="descripcion", rows="4", required)= ticket.descripcion || ''
+
+    .mb-3
+      label.form-label(for="tipo") Tipo
+      select.form-select(name="tipo", id="tipo", required)
+        option(value="Error", selected=ticket.tipo==='Error') Error
+        option(value="Consulta", selected=ticket.tipo==='Consulta') Consulta
+        option(value="Solicitud de mejora", selected=ticket.tipo==='Solicitud de mejora') Solicitud de mejora
+
+    .mb-3
+      label.form-label(for="estado") Estado
+      select.form-select(name="estado", id="estado", required)
+        option(value="En progreso", selected=ticket.estado==='En progreso') En progreso
+        option(value="Derivado", selected=ticket.estado==='Derivado') Derivado
+        option(value="Solucionado", selected=ticket.estado==='Solucionado') Solucionado
+
+    .mb-3
+      label.form-label(for="responsableActual") Responsable actual
+      select.form-select(name="responsableActual", id="responsableActual", required)
+        option(value="") -- Seleccione --
+        each usuario in usuariosResponsables
+          - const emp = usuario.empleado_id;
+          option(
+            value=usuario._id, 
+            selected=ticket.responsableActual && usuario._id.toString() === ticket.responsableActual._id.toString()
+          ) 
+            = emp ? `${emp.nombre} (${usuario.access_role})` : usuario.access_role
+
+    .mb-3
+      label.form-label(for="proyectoRelacionado") Proyecto relacionado
+      select.form-select(name="proyectoRelacionado", id="proyectoRelacionado")
+        option(value="") Ninguno
+        each proyecto in proyectos
+          option(
+            value=proyecto._id, 
+            selected=ticket.proyectoRelacionado && proyecto._id.toString()===ticket.proyectoRelacionado._id.toString()
+          ) #{proyecto.nombre}
+
+    button.btn.btn-primary(type="submit") Guardar cambios
+    a.btn.btn-secondary(href="/soporte") Cancelar

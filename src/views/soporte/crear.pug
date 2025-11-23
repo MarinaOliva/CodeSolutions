@@ -1,0 +1,52 @@
+extends ../layouts/main
+
+block contenido
+  h1 Crear Ticket
+
+  form(action="/soporte/crear", method="POST")
+    .mb-3
+      label.form-label(for="titulo") Título
+      input.form-control(type="text", id="titulo", name="titulo", required)
+
+    .mb-3
+      label.form-label(for="descripcion") Descripción
+      textarea.form-control(id="descripcion", name="descripcion", rows="4", required)
+    
+    .mb-3
+      label.form-label(for="cliente") Cliente
+      input.form-control(type="text", id="cliente", name="cliente")
+
+    .mb-3
+      label.form-label(for="tipo") Tipo
+      select.form-select(name="tipo", id="tipo", required)
+        option(value="Error") Error
+        option(value="Consulta", selected) Consulta
+        option(value="Solicitud de mejora") Solicitud de mejora
+
+    .mb-3
+      label.form-label(for="estado") Estado
+      select.form-select(name="estado", id="estado", required)
+        option(value="En progreso", selected) En progreso
+        option(value="Derivado") Derivado
+        option(value="Solucionado") Solucionado
+
+    .mb-3
+      label.form-label(for="responsableActual") Responsable actual
+      select.form-select(name="responsableActual", id="responsableActual", required)
+        option(value="") -- Seleccione --
+        each usuario in usuariosResponsables
+          - const emp = usuario.empleado_id;
+          option(
+            value=usuario._id
+          ) 
+            = emp ? `${emp.nombre} (${usuario.access_role})` : usuario.access_role
+
+    .mb-3
+      label.form-label(for="proyectoRelacionado") Proyecto relacionado
+      select.form-select(name="proyectoRelacionado", id="proyectoRelacionado")
+        option(value="") -- Seleccione --
+        each proyecto in proyectos
+          option(value=proyecto._id) #{proyecto.nombre}
+
+    button.btn.btn-primary(type="submit") Crear ticket
+    a.btn.btn-secondary(href="/soporte") Cancelar

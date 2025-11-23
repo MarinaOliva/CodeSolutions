@@ -37,6 +37,11 @@ const tareaSchema = new mongoose.Schema({
   fechaCreacion: {
     type: Date,
     default: Date.now
+  },
+  ticketOrigen: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Ticket',
+    default: null
   }
 });
 
