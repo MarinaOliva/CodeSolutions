@@ -50,14 +50,12 @@ app.use(localUser);
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'src', 'views')); 
 
-
 // AuthMiddleware
 const authMiddleware = require('./src/middlewares/auth');
 
 // ======================
 // Rutas
 // ======================
-
 const rutasPrincipales = require(path.join(__dirname, 'src', 'routes', 'index'));
 const rutasAuth = require(path.join(__dirname, 'src', 'routes', 'authRoutes'));
 const rutasProyectos = require(path.join(__dirname, 'src', 'routes', 'proyectoRoutes'));
@@ -73,7 +71,6 @@ app.use('/', rutasPrincipales);
 
 // --- RUTAS PRIVADAS ---
 app.use(authMiddleware);
-
 app.use('/proyectos', rutasProyectos);
 app.use('/empleados', rutasEmpleados);
 app.use('/tareas', rutasTareas);
@@ -98,10 +95,16 @@ app.use((err, req, res, next) => {
 });
 
 // ======================
-// Inicio del servidor
+// Levantar servidor solo si se ejecuta directamente
 // ======================
-const PUERTO = process.env.PORT || 3000;
+if (require.main === module) {
+  const PUERTO = process.env.PORT || 3000;
+  app.listen(PUERTO, () => {
+    console.log(`Servidor corriendo en http://localhost:${PUERTO}`);
+  });
+}
 
-app.listen(PUERTO, '0.0.0.0', () => {
-  console.log(`\nServidor corriendo en: http://localhost:${PUERTO}`);
-});
+// ======================
+// Exportar la app para usar en tests
+// ======================
+module.exports = app;
