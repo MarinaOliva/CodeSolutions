@@ -1,38 +1,50 @@
 # CodeSolutions: Sistema de Gestión de Proyectos
 
-CodeSolutions es una aplicación web full-stack desarrollada con Node.js, Express y MongoDB, diseñada para la gestión integral de proyectos, empleados y tareas dentro de una organización.
+CodeSolutions es una aplicación web  y escalable desarrollada con Node.js, Express y MongoDB. Diseñada bajo el patrón MVC, permite la gestión integral de recursos empresariales con un fuerte enfoque en la seguridad, roles de usuario y automatización de flujos de trabajo.
+
+🔗 **[Ver Demo Desplegada en Render](codesolutions-rgjw.onrender.com/)**
 
 ## Características Principales
 
-* **Gestión de Proyectos (CRUD):** Creación, lectura, actualización y baja lógica de proyectos.
-* **Gestión de Empleados (CRUD):** Administración del personal.
-* **Gestión de Tareas (CRUD):** Creación y asignación de tareas con seguimiento de horas.
-* **Generación de Reportes:** Creación de reportes dinámicos sobre el avance de proyectos y las horas trabajadas por empleado.
-* **Interfaz Responsiva:** Front-end moderno y 100% responsivo construido con Pug y Bootstrap 5.
+### Seguridad y Autenticación
+* **Autenticación Robusta:** Registro e inicio de sesión seguro utilizando **JWT (JSON Web Tokens)** almacenados en cookies `httpOnly` para prevenir ataques XSS.
+* **Hashing de Contraseñas:** Encriptación automática mediante `bcryptjs` y hooks de Mongoose (`pre-save`).
+* **Validación Doble:** Verificación de seguridad de contraseñas tanto en el frontend (feedback en tiempo real) como en el backend (Middlewares).
+
+### Control de Acceso (RBAC)
+* **Sistema de Roles:** Middleware personalizado (`rol.js`) que restringe el acceso a rutas y vistas según el perfil del usuario (`admin`, `soporte`, `desarrollador`, etc.).
+* **Herencia de Permisos:** Al registrar un usuario, este hereda automáticamente el nivel de acceso configurado en su ficha de empleado.
+
+### Módulo de Soporte y Automatización
+* **Gestión de Tickets:** Ciclo de vida completo de incidencias (Crear, Editar, Listar, Cerrar).
+* **Trazabilidad:** Vinculación automática del ticket con el usuario autenticado.
+* **Automatización de Tareas:** Lógica de negocio avanzada que convierte automáticamente un Ticket de Soporte en una Tarea de Desarrollo si se asigna a un perfil técnico (Desarrollador/Jefe de Proyecto), cerrando el circuito administrativo-técnico.
+
+### Gestión de Recursos (CRUDs)
+* **Proyectos y Empleados:** Administración completa con validaciones de negocio.
+* **Reportes Dinámicos:** Visualización de métricas de avance y horas trabajadas.
 
 ## Stack de Tecnologías
 
 * **Backend:** Node.js, Express.js
-* **Base de Datos:** MongoDB (con Mongoose)
-* **Motor de Plantillas (Frontend):** Pug 
-* **Framework de UI:** Bootstrap 5
-* **Utilitarios:**
-    * `dotenv` para la gestión de variables de entorno.
-    * `method-override` para habilitar los métodos PUT/DELETE desde formularios HTML.
+* **Base de Datos:** MongoDB Atlas (Mongoose ODM)
+* **Frontend:** Pug (Motor de plantillas), Bootstrap 5, Vanilla JS.
+* **Seguridad:** `bcryptjs`, `jsonwebtoken`, `cookie-parser`.
+* **Utilitarios:** `dotenv` (variables de entorno), `method-override`.
 
-## Instalación y Puesta en Marcha
+---
 
-Para ejecutar este proyecto:
+## Instalación y Desarrollo Local
+
+Si deseas ejecutar este proyecto en tu máquina local para desarrollo o pruebas, sigue estos pasos:
 
 ### 1. Prerrequisitos
-
 * [Node.js](https://nodejs.org/) (v16 o superior)
-* [MongoDB](https://www.mongodb.com/try/download/community) (tener una instancia local o una URI de MongoDB Atlas)
+* Una cuenta en [MongoDB Atlas](https://www.mongodb.com/atlas/database) (o una instancia local de MongoDB).
 
 ### 2. Clonar el Repositorio
-
 ```bash
-git clone https://github.com/tu-usuario/codesolutions.git
+git clone [https://github.com/tu-usuario/codesolutions.git](https://github.com/tu-usuario/codesolutions.git)
 cd codesolutions
 ```
 
@@ -43,17 +55,9 @@ npm install
 ```
 
 ### 4. Configurar Variables de Entorno
-Este proyecto utiliza un archivo `.env.example` como plantilla. En este punto del proyecto, se puede copiar su contenido a un archivo `.env` local. que debe ser creado previamente en la raíz del proyecto.
+Este proyecto utiliza un archivo `.env.example` como plantilla.
 
-### 5. Cargar la Base de Datos (Inicialización)
-
-Antes de arrancar la app por primera vez, ejecutar el script `initDB.js` para poblar la base de datos con los datos iniciales.
-
-```bash
-node src/config/initDB.js
-```
-
-### 6. Ejecutar el Servidor
+### 5. Ejecutar el Servidor
 Una vez instaladas las dependencias y cargada la base de datos, iniciar el servidor:
 
 ```bash
@@ -65,3 +69,11 @@ npm start
 # O para desarrollo (si se cuenta con nodemon)
 npm run dev
 ```
+Visita http://localhost:3000 en tu navegador.
+
+## Despliegue
+
+Este proyecto está configurado para desplegarse en **Render**.
+
+* El archivo `app.js` utiliza `process.env.PORT` para la asignación dinámica de puertos en la nube.
+* Las credenciales sensibles (`MONGO_URI`, `JWT_SECRET`) **no se suben al repositorio**; se configuran directamente en las variables de entorno del servicio de hosting.
