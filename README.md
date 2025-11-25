@@ -4,6 +4,20 @@ CodeSolutions es una aplicación web  y escalable desarrollada con Node.js, Expr
 
 🔗 **[Ver Demo Desplegada en Render](https://codesolutions-rgjw.onrender.com/)**
 
+## Usuarios de Demostración
+
+Estos accesos permiten explorar la aplicación con distintos roles.
+
+> **Nota:** Todos los datos del sistema son ficticios y fueron creados únicamente con fines académicos.
+
+| Rol | Usuario | Contraseña |
+| :--- | :--- | :--- |
+| **Administrador** | `luis.castillo@codesolutions.com` | `CastilloCode@85` |
+| **Contadora** | `valentina.gomez@codesolutions.com` | `valeGo36$` |
+| **Desarrollador** | `martin.rojas@codesolutions.com` | `Red!martin25` |
+| **Jefe de Proyecto** | `patricia.ortega@codesolutions.com` | `%ProCode19` |
+| **Soporte** | `elena.navarro@codesolutions.com` | `Ele*Navarr0` |
+
 ## Características Principales
 
 ### Seguridad y Autenticación
